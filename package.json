@@ -1,0 +1,22 @@
+{
+  "name": "clipxv",
+  "version": "1.0.0",
+  "description": "Video clip cutter",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/if-else-return-null/clipxv",
+  "keywords": [
+    "Video",
+    "clip",
+    "mp4",
+    "ffmpeg",
+    "cutter"
+  ],
+  "author": "ReturnNull",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^11.1.1"
+  }
+}

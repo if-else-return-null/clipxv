@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <link rel="stylesheet" href="index.css">
+    <title>ClipXv</title>
+ </head>
+ <body>
+
+     <video id="vplayer" src="" autoplay poster="" controls>
+
+     </video>
+
+    <div id="clip_list">
+
+    </div>
+    <div id="clip_controls">
+        <button type="button" id="mark_clip_start_btn">Start Clip</button>
+        <button type="button" id="mark_clip_end_btn">End Clip</button>
+        <button type="button" id="mark_clip_save_btn">Save Clip</button>
+
+        <hr>
+        load <input type="file" id="file_choose_video" value="">
+        <button type="button" id="file_load_button" >Load</button>
+    </div>
+    <!-- You can also require other files to run in this process -->
+    <script src="./renderer.js"></script>
+</body>
+</html>
