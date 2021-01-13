@@ -3,3 +3,7 @@
 #clip_list { position: absolute; top: 0%; right: 0%; width: 20%; height:100%; background: blue; }
 
 #clip_controls { position: absolute; bottom: 0%; left: 0%; width: 80%; height:auto; background: green; }
+
+
+#time_update_text { width:49%; font-size: 75%; display: inline-block; text-align: center;}
+#sub_conrols_1 { width: 49%; display: inline-block;text-align: center;}
