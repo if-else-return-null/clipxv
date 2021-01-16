@@ -42,7 +42,8 @@ function setProjectFile(){
     BYID("vplayer").src = path
 }
 
-let clips = []
+let CLIPS = {}
+let clip_order = []
 
 let STATE = {}
 STATE.cur_clip_id = null
@@ -91,31 +92,92 @@ function seekClipEnd(){
 
 
 function markClipClear(){
-    //
-    BYID("mark_clip_start_input").value = BYID("mark_clip_end_input").value
-    BYID("mark_clip_end_input").value = vplayer.duration
-    vplayer.currentTime = BYID("mark_clip_start_input").value
+    vplayerPause()
+    BYID("mark_clip_start_input").value = ""
+    BYID("mark_clip_end_input").value = ""
     STATE.cur_clip_id = null
+    clip_order.forEach((item, i) => {
+        BYID(item).style.outline = "none"
+    });
+
 }
 
 
 function markClipSave(){
-    let start = BYID("mark_clip_start_input").value
-    let end = BYID("mark_clip_end_input").value
+    let start = parseFloat(BYID("mark_clip_start_input").value)
+    let end = parseFloat(BYID("mark_clip_end_input").value)
     //*** check for 0 or negative length values
     if ( end <= start ) {
-        console.log("Invalid Time / length");
+        console.log("Invalid Time / length", start, end );
         return
     }
     let id = STATE.cur_clip_id
     if (id === null) {
         id = generateUUIDv4()
         STATE.cur_clip_id = id
+        clip_order.push(id)
     }
-    let data = {}
-    data.video_path = BYID("vplayer").src.replace("file://", "")
-    data.start = BYID("mark_clip_start_input").value
-    data.end = BYID("mark_clip_end_input").value
+    //let data = {}
+    if (!CLIPS[id]) { CLIPS[id] = {}  }
+    CLIPS[id].id = id
+    CLIPS[id].video_path = BYID("vplayer").src.replace("file://", "")
+    CLIPS[id].start = start.toFixed(3)
+    CLIPS[id].end = end.toFixed(3)
+    CLIPS[id].runtime = parseFloat(end - start).toFixed(3)
 
-    clips.push(data)
+    function finishSave(){
+        var canvas = document.createElement('canvas');
+        canvas.height = vplayer.videoHeight;
+        canvas.width = vplayer.videoWidth;
+
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(vplayer, 0, 0, canvas.width, canvas.height);
+
+        CLIPS[id].thumb = canvas.toDataURL();
+        parseClipList()
+        //seekClipStart()
+        markClipClear()
+        vplayer.currentTime = end
+        vplayer.removeEventListener("seeked", finishSave)
+    }
+    vplayer.currentTime = start
+    vplayer.addEventListener("seeked",finishSave)
+
+}
+
+
+
+function parseClipList(){
+    let str = ""
+    clip_order.forEach((item, i) => {
+        let data = CLIPS[item]
+        str += `<div id="${item}" class="clipcard" >`
+        str += `<img id ="img_${item}" src="${data.thumb}" />`
+        str += `Start: &nbsp;${data.start} <br>`
+        str += `End: &nbsp;&nbsp;&nbsp;${data.end} <br>`
+        str += `Length: ${data.runtime} <br>`
+        str += `</div>`
+    });
+    BYID("clip_list").innerHTML = str
+    clip_order.forEach((item, i) =>{
+        BYID(item).addEventListener('click', (event) => {
+          console.log('selected clip ', event.target.id);
+          loadPrevClip(event.target.id)
+        });
+
+    })
+}
+
+
+function loadPrevClip(id) {
+    id = id.replace("img_", "")
+    vplayerPause()
+    BYID("mark_clip_start_input").value = parseFloat(CLIPS[id].start)
+    BYID("mark_clip_end_input").value = parseFloat(CLIPS[id].end)
+    vplayer.currentTime = parseFloat(CLIPS[id].start)
+    STATE.cur_clip_id = id
+    clip_order.forEach((item, i) => {
+        BYID(item).style.outline = "none"
+    });
+    BYID(id).style.outline = "1px solid blue"
 }
