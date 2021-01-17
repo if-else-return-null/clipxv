@@ -10,11 +10,18 @@
     <title>ClipXv</title>
  </head>
  <body>
-     <div id="clip_list">
+     <div id="video_list_cont">
+         <label class="custom-file-upload">
+             <input type="file" id="file_choose_video" webkitdirectory directory value="">
+             Choose Folder
+        </label>
+         <hr>
+         <div id="video_list">
 
+         </div>
      </div>
      <div id="mid_area">
-         <video id="vplayer" src="" autoplay poster="" controls></video>
+         <video id="vplayer" src=""  poster="" controls></video>
 
          <div id="clip_controls">
              <div id="time_update_text"></div>
@@ -22,6 +29,7 @@
                  <button type="button" id="clip_play_btn">Play</button>
                  <button type="button" id="clip_pause_btn">Pause</button>
              </div>
+
              <hr>
              <button type="button" id="mark_clip_start_btn">Start Clip</button>
              <input type="number" step="1" id="mark_clip_start_input" value="">
@@ -35,9 +43,26 @@
              <hr>
              <button type="button" id="mark_clip_save_btn">Save Clip</button>
              <button type="button" id="mark_clip_clear_btn">Clear Clip</button>
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             <button type="button" id="mark_clip_archive_btn">Save for Later</button>
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             <button type="button" id="mark_clip_delete_btn">Delete Clip</button>
+
              <hr>
-             load <input type="file" id="file_choose_video" webkitdirectory directory value="">
-             <button type="button" id="file_load_button" >Load</button>
+             <div id="sub_conrols_2">
+                 Project Info <br>
+                 Change Project: &nbsp;&nbsp;&nbsp;<select id="project_selector" name=""></select>
+                 <button type="button" id="project_new_btn">New</button><br>
+                 <input type="text" id="project_rename_input" value="">
+                 <button type="button" id="project_rename_btn">Rename</button><br>
+                 <button type="button" id="project_delete_btn">Delete</button>
+                 <span id="project_confirm_delete_area">
+                     <button type="button" id="project_confirm_delete_btn">Confirm Delete</button>
+                     <button type="button" id="project_cancel_delete_btn">Cancel</button>
+                 </span>
+
+             </div>
+
          </div>
      </div>
 
@@ -48,6 +73,11 @@
     </div>
 
     <!-- You can also require other files to run in this process -->
-    <script src="./renderer.js"></script>
+    <script src="./utility.js"></script>
+    <script src="./files_and_projects.js"></script>
+    <script src="./clips.js"></script>
+    <script src="./listeners.js"></script>
+
+
 </body>
 </html>
