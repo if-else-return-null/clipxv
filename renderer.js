@@ -35,11 +35,16 @@ vplayer.addEventListener('timeupdate', (event) => {
 });
 
 
-
+//*** debug path for win32
 function setProjectFile(){
-    let path = BYID("file_choose_video").files[0].path
+    console.log(BYID("file_choose_video").files)
+    let fpath = BYID("file_choose_video").files[0].path
+    fpath = fpath.split("/")
+    let remove = fpath.pop()
+    path = fpath.join("/")
     console.log(path);
-    BYID("vplayer").src = path
+    capi.ipcSend("from_mainWindow",{type:"video_folder_path", path:path})
+    //BYID("vplayer").src = path
 }
 
 let CLIPS = {}
@@ -180,4 +185,16 @@ function loadPrevClip(id) {
         BYID(item).style.outline = "none"
     });
     BYID(id).style.outline = "1px solid blue"
+}
+
+setTimeout(function (){
+    capi.ipcSend("from_mainWindow",{type:"greet", msg:"hello"})
+},5000)
+
+
+function handleFromMainProcess(data) {
+    console.log("from_mainProcess", data);
+    if (data.type = "video_folder_path") {
+
+    }
 }

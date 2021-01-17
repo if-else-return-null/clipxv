@@ -10,37 +10,43 @@
     <title>ClipXv</title>
  </head>
  <body>
+     <div id="clip_list">
 
-     <video id="vplayer" src="" autoplay poster="" controls>
+     </div>
+     <div id="mid_area">
+         <video id="vplayer" src="" autoplay poster="" controls></video>
 
-     </video>
+         <div id="clip_controls">
+             <div id="time_update_text"></div>
+             <div id="sub_conrols_1">
+                 <button type="button" id="clip_play_btn">Play</button>
+                 <button type="button" id="clip_pause_btn">Pause</button>
+             </div>
+             <hr>
+             <button type="button" id="mark_clip_start_btn">Start Clip</button>
+             <input type="number" step="1" id="mark_clip_start_input" value="">
+             <button type="button" id="seek_clip_start_btn">Seek</button>
+
+
+             <br>
+             <button type="button" id="mark_clip_end_btn">End Clip</button>
+             <input type="number" step="1" id="mark_clip_end_input" value="">
+             <button type="button" id="seek_clip_end_btn">Seek</button>
+             <hr>
+             <button type="button" id="mark_clip_save_btn">Save Clip</button>
+             <button type="button" id="mark_clip_clear_btn">Clear Clip</button>
+             <hr>
+             load <input type="file" id="file_choose_video" webkitdirectory directory value="">
+             <button type="button" id="file_load_button" >Load</button>
+         </div>
+     </div>
+
+
 
     <div id="clip_list">
 
     </div>
-    <div id="clip_controls">
-        <div id="time_update_text"></div>
-        <div id="sub_conrols_1">
-            <button type="button" id="clip_play_btn">Play</button>
-            <button type="button" id="clip_pause_btn">Pause</button>
-        </div>
-        <hr>
-        <button type="button" id="mark_clip_start_btn">Start Clip</button>
-        <input type="number" step="1" id="mark_clip_start_input" value="">
-        <button type="button" id="seek_clip_start_btn">Seek</button>
 
-
-        <br>
-        <button type="button" id="mark_clip_end_btn">End Clip</button>
-        <input type="number" step="1" id="mark_clip_end_input" value="">
-        <button type="button" id="seek_clip_end_btn">Seek</button>
-        <hr>
-        <button type="button" id="mark_clip_save_btn">Save Clip</button>
-        <button type="button" id="mark_clip_clear_btn">Clear Clip</button>
-        <hr>
-        load <input type="file" id="file_choose_video" value="">
-        <button type="button" id="file_load_button" >Load</button>
-    </div>
     <!-- You can also require other files to run in this process -->
     <script src="./renderer.js"></script>
 </body>
