@@ -26,7 +26,7 @@ META.items = {}
 META.projects = { cur_id:null, items:{} } //e2d7767b-75f3-4b5d-b18a-6c52e18a6b47
 let STATE = {}
 STATE.cur_clip_id = null
-
+STATE.first_load_info_visible = true
 
 if (localStorage.getItem("meta")){
     console.log("found meta storage");

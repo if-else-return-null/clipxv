@@ -11,6 +11,11 @@
  </head>
  <body>
      <div id="video_list_cont">
+         <div id="first_load_info">
+             <h2>***This app is currently under development and may not work***</h2>
+             <br>
+             <h2>Where are you video files?<br></h2>
+         </div>
          <label class="custom-file-upload">
              <input type="file" id="file_choose_video" webkitdirectory directory value="">
              Choose Folder
@@ -25,31 +30,36 @@
 
          <div id="clip_controls">
              <div id="time_update_text"></div>
-             <div id="sub_conrols_1">
+             <div id="sub_controls_1" class="sub_control">
+                 <button type="button" id="mark_clip_start_btn">Start Clip</button>
+                 <input type="number" step="1" id="mark_clip_start_input" value="">
+                 <button type="button" id="seek_clip_start_btn">Seek</button>
+
+
+                 <br>
+                 <button type="button" id="mark_clip_end_btn">End Clip</button>
+                 <input type="number" step="1" id="mark_clip_end_input" value="">
+                 <button type="button" id="seek_clip_end_btn">Seek</button>
+             </div>
+             <div id="sub_controls_2" class="sub_control">
                  <button type="button" id="clip_play_btn">Play</button>
                  <button type="button" id="clip_pause_btn">Pause</button>
              </div>
 
              <hr>
-             <button type="button" id="mark_clip_start_btn">Start Clip</button>
-             <input type="number" step="1" id="mark_clip_start_input" value="">
-             <button type="button" id="seek_clip_start_btn">Seek</button>
+    
+             <div  id="sub_controls_3" class="sub_control">
+                 <button type="button" id="mark_clip_save_btn">Save Clip</button>
+                 <button type="button" id="mark_clip_clear_btn">Clear Clip</button>
+                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                 <button type="button" id="mark_clip_archive_btn">Save for Later</button>
+                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                 <button type="button" id="mark_clip_delete_btn">Delete Clip</button>
+             </div>
 
-
-             <br>
-             <button type="button" id="mark_clip_end_btn">End Clip</button>
-             <input type="number" step="1" id="mark_clip_end_input" value="">
-             <button type="button" id="seek_clip_end_btn">Seek</button>
-             <hr>
-             <button type="button" id="mark_clip_save_btn">Save Clip</button>
-             <button type="button" id="mark_clip_clear_btn">Clear Clip</button>
-             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-             <button type="button" id="mark_clip_archive_btn">Save for Later</button>
-             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-             <button type="button" id="mark_clip_delete_btn">Delete Clip</button>
 
              <hr>
-             <div id="sub_conrols_2">
+             <div id="sub_controls_4" class="sub_control">
                  Project Info <br>
                  Change Project: &nbsp;&nbsp;&nbsp;<select id="project_selector" name=""></select>
                  <button type="button" id="project_new_btn">New</button><br>
@@ -62,7 +72,11 @@
                  </span>
 
              </div>
+             <div id="archive_clip_list_cont">
+                 Archived Clips
+                 <div id="archive_clip_list"></div>
 
+             </div>
          </div>
      </div>
 

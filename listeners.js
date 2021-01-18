@@ -45,6 +45,19 @@ BYID("project_selector").addEventListener('change', (event) => {
   markClipClear()
 });
 
+
+BYID("archive_clip_list").addEventListener('click', (event) => {
+
+  let id = event.target.id.replace("arcimg_","").replace("arc_","")
+  console.log('selected archived video clip ', id);
+  let thisclip = META.items[STATE.video_filename].clips[id]
+  markClipClear()
+  BYID("mark_clip_start_input").value = parseFloat(thisclip.start)
+  BYID("mark_clip_end_input").value = parseFloat(thisclip.end)
+  vplayer.currentTime = parseFloat(thisclip.start)
+
+});
+
 // start up calls
 
 // if there is no current project create one

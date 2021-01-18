@@ -55,6 +55,12 @@ function confirmDeleteProject() {
 
 //*** debug path for win32
 function setVideoFolder(){
+    if (STATE.first_load_info_visible === true) {
+        console.log("clearing first load");
+        STATE.first_load_info_visible = false
+        BYID("first_load_info").style.display = "none"
+        BYID("video_list_cont").style.width = "20%"
+    }
     let temp = BYID("file_choose_video").files
     FILES = { items:{}, list:[] }
     let basefolder
@@ -115,15 +121,28 @@ function loadVideoFile(fn,id = null ) {
     BYID("vplayer").src = path
     STATE.video_filename = name
     STATE.video_path = path
-    if (META.items[STATE.video_filename]) {
-        //*** load video file clip data
-        console.log("load video file archive data",META.items[STATE.video_filename]);
-    } else {
+    if (!META.items[STATE.video_filename]) {
         // create clip data for file
         META.items[STATE.video_filename] = {clips:{}}
         console.log("create empty video file archive data",META.items[STATE.video_filename]);
         saveMeta()
     }
+    console.log("load video file archive data",META.items[STATE.video_filename]);
+    parseArchivedClips()
+}
+
+function parseArchivedClips() {
+    let str = ""
+    let clips = META.items[STATE.video_filename].clips
+    for (let c in clips ) {
+        str += `<div id="arc_${c}" class="arc_clipcard" >`
+        str += `<img id ="arcimg_${c}" src="${clips[c].thumb}" /><br>`
+        str += `Start: &nbsp;${clips[c].start} <br>`
+        str += `End: &nbsp;&nbsp;&nbsp;${clips[c].end} <br>`
+        str += `Length: ${clips[c].runtime} <br>`
+        str += `</div>`
+    }
+    BYID("archive_clip_list").innerHTML = str
 }
 
 
