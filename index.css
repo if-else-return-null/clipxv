@@ -10,15 +10,19 @@ body { background:blue;}
 
 }
 
+.time_input { width:100px;}
 .sub_control { padding:10px; text-align: center;}
 
 #time_update_text { width:30%; font-size: 75%; display: inline-block; text-align: center;}
 #sub_controls_1 { width: 30%; display: inline-block;text-align: center;}
 #sub_controls_2 { width: 30%; display: inline-block;text-align: center;}
 
+#sub_controls_4 { width: 45%;  height:140px;  display: inline-block; text-align: center;}
+
+#clip_confirm_delete_area {display: none;}
 
 #archive_clip_list_cont {
-    width:100%;  height:150px;  overflow: hidden; text-align: center;
+    width:45%;  height:140px;  overflow: hidden; display: inline-block; text-align: center;
 }
 #archive_clip_list { width:auto; height:140px; overflow: auto;}
 

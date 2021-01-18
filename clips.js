@@ -143,3 +143,26 @@ function loadPrevClip(id) {
     });
     BYID(id).style.outline = "1px solid blue"
 }
+
+
+
+function deleteClip() {
+    BYID("clip_confirm_delete_area").style.display = "inline-block"
+}
+
+function cancelDeleteClip() {
+    BYID("clip_confirm_delete_area").style.display = "none"
+}
+
+function confirmDeleteClip() {
+    console.log("deleting current clip");
+    BYID("clip_confirm_delete_area").style.display = "none"
+    delete META.projects.items[META.projects.cur_id].clips[STATE.cur_clip_id]
+    // remove from clip_order
+    let cindex = META.projects.items[META.projects.cur_id].clip_order.indexOf(STATE.cur_clip_id)
+    let removed = META.projects.items[META.projects.cur_id].clip_order.splice(cindex,1)
+    BYID("clip_list").removeChild( BYID(STATE.cur_clip_id) )
+    console.log("clip_order index,value :", cindex, removed);
+    saveMeta()
+    markClipClear()
+}

@@ -10,6 +10,10 @@ BYID("file_choose_video").addEventListener('input', setVideoFolder)
 BYID("mark_clip_save_btn").addEventListener('click', markClipSave)
 BYID("mark_clip_clear_btn").addEventListener('click', markClipClear)
 BYID("mark_clip_archive_btn").addEventListener('click', markClipArchive)
+BYID("clip_delete_btn").addEventListener('click', deleteClip)
+BYID("clip_confirm_delete_btn").addEventListener('click', confirmDeleteClip)
+BYID("clip_cancel_delete_btn").addEventListener('click', cancelDeleteClip)
+
 
 BYID("clip_play_btn").addEventListener('click', vplayerPlay)
 BYID("clip_pause_btn").addEventListener('click', vplayerPause)
