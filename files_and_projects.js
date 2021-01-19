@@ -51,6 +51,17 @@ function confirmDeleteProject() {
     createNewProject()
 }
 
+function showFolderChooser(){
+    console.log();
+    if (STATE.first_load_info_visible === true) {
+        console.log("clearing first load");
+        STATE.first_load_info_visible = false
+        BYID("first_load_info").style.display = "none"
+        BYID("video_list_cont").style.width = "20%"
+    }
+
+}
+
 
 
 //*** debug path for win32
@@ -128,6 +139,7 @@ function loadVideoFile(fn,id = null ) {
         saveMeta()
     }
     console.log("load video file archive data",META.items[STATE.video_filename]);
+    if (id === null) {vplayer.currentTime = parseFloat(0.01)}
     parseArchivedClips()
 }
 
@@ -154,6 +166,12 @@ setTimeout(function (){
 
 function handleFromMainProcess(data) {
     console.log("from_mainProcess", data);
+    if (data.type = "home_file_list") {
+        FILES[data.root] = data.files
+        if (STATE.first_load_info_visible === false) {
+            showFolderChooser()
+        }
+    }
     if (data.type = "video_folder_path") {
 
     }

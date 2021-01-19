@@ -6,7 +6,7 @@ vplayer.addEventListener('timeupdate', (event) => {
 
 
 
-BYID("file_choose_video").addEventListener('input', setVideoFolder)
+BYID("file_choose_video").addEventListener('click', showFolderChooser)
 BYID("mark_clip_save_btn").addEventListener('click', markClipSave)
 BYID("mark_clip_clear_btn").addEventListener('click', markClipClear)
 BYID("mark_clip_archive_btn").addEventListener('click', markClipArchive)
