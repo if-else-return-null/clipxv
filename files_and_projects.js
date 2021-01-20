@@ -11,7 +11,7 @@ function parseProjectList () {
     for ( let item in META.projects.items ) {
         let selected = ""
         let data = META.projects.items[item]
-        if (item === META.projects.cur_id) { selected = "selected"}
+        if (item === MP.prid) { selected = "selected"}
         str += `<option ${selected} value="${item}" >${data.name}</option>`
     }
 
@@ -20,8 +20,13 @@ function parseProjectList () {
 }
 
 function createNewProject(){
-    META.projects.cur_id = generateUUIDv4()
-    META.projects.items[META.projects.cur_id] = { name:"untitled", clips:{} , clip_order:[]}
+    META.projects.prid = generateUUIDv4()
+    META.projects.items[MP.prid] = {
+        name:"untitled",
+        folder:STATE.file_chooser_path,
+        clips:{} ,
+        clip_order:[]
+    }
     saveMeta()
     parseClipList()
     parseProjectList()
@@ -31,7 +36,7 @@ function createNewProject(){
 function renameProject() {
     let newname = BYID("project_rename_input").value.trim()
     if (newname === "" || newname === "" ) { console.log("invalid name"); return;  }
-    META.projects.items[META.projects.cur_id].name = newname
+    META.projects.items[MP.prid].name = newname
     saveMeta()
     parseProjectList()
 }
@@ -47,31 +52,46 @@ function cancelDeleteProject() {
 function confirmDeleteProject() {
     console.log("deleting current project");
     BYID("project_confirm_delete_area").style.display = "none"
-    delete META.projects.items[META.projects.cur_id]
+    delete META.projects.items[MP.prid]
     createNewProject()
 }
 
-function showFolderChooser(){
-    console.log();
+function parseFolderView(){
+    /*
     if (STATE.first_load_info_visible === true) {
         console.log("clearing first load");
         STATE.first_load_info_visible = false
         BYID("first_load_info").style.display = "none"
         BYID("video_list_cont").style.width = "20%"
     }
+    */
+    let list = FILES[STATE.file_chooser_path]
+    console.log("parseFolderView", list);
 
 }
 
-
+function folderChooserHome() {
+    console.log("folderChooserHome");
+    capi.ipcSend("from_mainWindow",{ type:"request_file_list", url:"home" })
+}
+function folderChooserParent () {
+    capi.ipcSend("from_mainWindow",{ type:"request_file_list", url:"parent" })
+}
+function folderChooserUrl(url) {
+    console.log("folderChooserUrl", url);
+    capi.ipcSend("from_mainWindow",{ type:"request_file_list", url:url })
+}
 
 //*** debug path for win32
 function setVideoFolder(){
+    /*
     if (STATE.first_load_info_visible === true) {
         console.log("clearing first load");
         STATE.first_load_info_visible = false
         BYID("first_load_info").style.display = "none"
         BYID("video_list_cont").style.width = "20%"
     }
+    */
     let temp = BYID("file_choose_video").files
     FILES = { items:{}, list:[] }
     let basefolder
@@ -126,8 +146,8 @@ function loadVideoFile(fn,id = null ) {
         path = FILES.items[fn].path
         name = FILES.items[fn].name
     } else {
-        path = META.projects.items[META.projects.cur_id].clips[id].video_path
-        name = META.projects.items[META.projects.cur_id].clips[id].video_filename
+        path = META.projects.items[MP.prid].clips[id].video_path
+        name = META.projects.items[MP.prid].clips[id].video_filename
     }
     BYID("vplayer").src = path
     STATE.video_filename = name
@@ -160,17 +180,23 @@ function parseArchivedClips() {
 
 //*** below here not used at this time
 setTimeout(function (){
-    capi.ipcSend("from_mainWindow",{type:"greet", msg:"hello"})
+    //capi.ipcSend("from_mainWindow",{type:"greet", msg:"hello"})
 },5000)
 
 
 function handleFromMainProcess(data) {
-    console.log("from_mainProcess", data);
-    if (data.type = "home_file_list") {
+    //console.log("from_mainProcess", data);
+    if (data.type = "file_chooser_path") {
         FILES[data.root] = data.files
+        STATE.file_chooser_path = data.root
+        META.projects.items[MP.prid].folder = data.root
+        saveMeta()
+        parseFolderView(data.root)
+        /*
         if (STATE.first_load_info_visible === false) {
-            showFolderChooser()
+
         }
+        */
     }
     if (data.type = "video_folder_path") {
 

@@ -23,16 +23,20 @@ function vplayerPause(){
 let FILES = {}
 let META = {}
 META.items = {}
-META.projects = { cur_id:null, items:{} } //e2d7767b-75f3-4b5d-b18a-6c52e18a6b47
+META.projects = { prid:null,  items:{} } //e2d7767b-75f3-4b5d-b18a-6c52e18a6b47
+let MP = META.projects
 let STATE = {}
+
 STATE.cur_clip_id = null
 STATE.first_load_info_visible = true
+STATE.file_chooser_path = null
 
 if (localStorage.getItem("meta")){
     console.log("found meta storage");
     META = JSON.parse(localStorage.getItem("meta"))
-    //CLIPS = META.projects.items[META.projects.cur_id].clips
-    //clip_order = META.projects.items[META.projects.cur_id].clip_order
+    MP = META.projects
+    //CLIPS = META.projects.items[META.projects.prid].clips
+    //clip_order = META.projects.items[META.projects.prid].clip_order
 
 } else {
     console.log("Creating meta storage");

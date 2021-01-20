@@ -32,9 +32,11 @@ body { background:blue;}
 #project_confirm_delete_area {display: none;}
 
 #video_list_cont {
-    position: absolute; top: 0%; left: 0%; width: 100%; height:100%; background: none;
+    position: absolute; top: 0%; left: 0%; width: 20%; height:100%; background: none;
     text-align: center; z-index: 10; background: rgba(0, 0, 0, 0.75); color: white;
 }
+
+#first_load_info  { display: none;}
 
 #video_list {width: 100%; height:80%; overflow: auto; text-align: left;}
 

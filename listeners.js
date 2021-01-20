@@ -5,8 +5,9 @@ vplayer.addEventListener('timeupdate', (event) => {
 });
 
 
+BYID("file_choose_video_home").addEventListener('click', folderChooserHome)
+BYID("file_choose_video_parent").addEventListener('click', folderChooserParent)
 
-BYID("file_choose_video").addEventListener('click', showFolderChooser)
 BYID("mark_clip_save_btn").addEventListener('click', markClipSave)
 BYID("mark_clip_clear_btn").addEventListener('click', markClipClear)
 BYID("mark_clip_archive_btn").addEventListener('click', markClipArchive)
@@ -43,7 +44,7 @@ BYID("video_list").addEventListener('click', (event) => {
 BYID("project_selector").addEventListener('change', (event) => {
   console.log('selected project is ', BYID(event.target.id).value);
 
-  META.projects.cur_id = BYID(event.target.id).value
+  META.projects.prid = BYID(event.target.id).value
   parseClipList()
   parseProjectList()
   markClipClear()
@@ -64,14 +65,23 @@ BYID("archive_clip_list").addEventListener('click', (event) => {
 
 // start up calls
 
+
+
 // if there is no current project create one
-if (META.projects.cur_id === null) {
+if (META.projects.prid === null) {
     // create a new project id
     createNewProject()
+    folderChooserHome()
 
 } else {
-
+    console.log("test",MP.prid, META.projects.items[MP.prid]);
+    folderChooserUrl(META.projects.items[MP.prid].folder)
     parseClipList()
     parseProjectList()
+    setTimeout(function(){
+
+
+    }, 1000)
+
 
 }

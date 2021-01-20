@@ -26,7 +26,8 @@ function createWindow () {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
-  runFiles(user_home)
+
+  //runFiles(user_home)
 
 }
 
@@ -55,19 +56,24 @@ app.on('window-all-closed', function () {
 
 ipcMain.on('from_mainWindow', (event, data) => {
     console.log("from_mainWindow", data)
-    if (data.type === "video_folder_path"){   }
+    if (data.type === "request_file_list"){ runFiles(data.url)  }
 
 })
 
 setTimeout(function (){
-    mainWindow.webContents.send("from_mainProcess",{type:"greet", msg:"hello", files:FILELIST[user_home]})
+    //mainWindow.webContents.send("from_mainProcess",{type:"greet", msg:"hello", files:FILELIST[user_home]})
 },5000)
 
 
 let FILELIST = {}
-
+let CWD = user_home
 function runFiles(thisurl) {
-
+        console.log("FL--> Starting a folder listing", thisurl);
+        if (thisurl === "home") { thisurl = user_home }
+        if (thisurl === "parent") {
+            console.log("Parent folder requested");
+        }
+        CWD = thisurl
         console.log("FL--> Starting a folder listing", thisurl);
         startread = new Date();
 
@@ -298,7 +304,7 @@ function runFiles(thisurl) {
                 if (FILELIST[thisurl].lastid === FILELIST[thisurl].curid) {
                     console.log("FL--> Read dir complete in ", new Date() - startread ,"ms")
                     //console.log(FILELIST[thisurl]);
-                    mainWindow.webContents.send("from_mainProcess",{type:"home_file_list", root:thisurl, files:FILELIST[thisurl]})
+                    mainWindow.webContents.send("from_mainProcess",{type:"file_chooser_path", root:thisurl, files:FILELIST[thisurl]})
                     //process.send({ action:"filelist_update", thisurl: thisurl , filelist:FILELIST[thisurl] });
                     //showFileList(reload)
                 }
