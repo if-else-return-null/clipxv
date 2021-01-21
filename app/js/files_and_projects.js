@@ -65,9 +65,25 @@ function parseFolderView(){
         BYID("video_list_cont").style.width = "20%"
     }
     */
-    let list = FILES[STATE.file_chooser_path]
-    console.log("parseFolderView", list);
+    let str = {files:"", folders:""}
+    console.log("parseFolderView");
+    for (var i = 0; i < FILES.paths.length; i++) {
+        let item = FILES.items[i]
+        if (item.type === "folder") {
+            str.folders +=`<div id="${i}" class="video_list_folder" ><img id="${i}" src="assets/folder.svg" />${item.name}</div>`
+        }
+        else if (item.type === "file") {
+            if ( item.ftype !== "file" ) {
+                str.files +=`<div id="${i}" class="video_list_item" ><img id="${i}" src="assets/video.svg" />${item.name}</div>`
+            }
+        }
+        else {
+            // other files
+        }
 
+    }
+    let head = `<div  class="video_list_path" >${STATE.file_chooser_path}</div>`
+    BYID("video_list").innerHTML = head + str.folders + str.files
 }
 
 function folderChooserHome() {
@@ -152,20 +168,20 @@ function loadVideoFile(fn,id = null ) {
     BYID("vplayer").src = path
     STATE.video_filename = name
     STATE.video_path = path
-    if (!META.items[STATE.video_filename]) {
+    if (!META.files[STATE.video_filename]) {
         // create clip data for file
-        META.items[STATE.video_filename] = {clips:{}}
-        console.log("create empty video file archive data",META.items[STATE.video_filename]);
+        META.files[STATE.video_filename] = {clips:{}}
+        console.log("create empty video file archive data",META.files[STATE.video_filename]);
         saveMeta()
     }
-    console.log("load video file archive data",META.items[STATE.video_filename]);
+    console.log("load video file archive data",META.files[STATE.video_filename]);
     if (id === null) {vplayer.currentTime = parseFloat(0.01)}
     parseArchivedClips()
 }
 
 function parseArchivedClips() {
     let str = ""
-    let clips = META.items[STATE.video_filename].clips
+    let clips = META.files[STATE.video_filename].clips
     for (let c in clips ) {
         str += `<div id="arc_${c}" class="arc_clipcard" >`
         str += `<img id ="arcimg_${c}" src="${clips[c].thumb}" /><br>`
@@ -187,7 +203,7 @@ setTimeout(function (){
 function handleFromMainProcess(data) {
     //console.log("from_mainProcess", data);
     if (data.type = "file_chooser_path") {
-        FILES[data.root] = data.files
+        FILES = data.files
         STATE.file_chooser_path = data.root
         META.projects.items[MP.prid].folder = data.root
         saveMeta()

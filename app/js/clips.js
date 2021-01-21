@@ -84,7 +84,7 @@ function markClipSave(){
         markClipClear()
         vplayer.currentTime = end
         // *** move to a seperte action *** save the clip to meta for this file
-        //META.items[STATE.video_filename].clips[id] = cloneObj(META.projects.items[MP.prid].clips[id])
+        //META.files[STATE.video_filename].clips[id] = cloneObj(META.projects.items[MP.prid].clips[id])
         saveMeta()
         vplayer.removeEventListener("seeked", finishSave)
     }
@@ -99,7 +99,7 @@ function markClipArchive(){
         return
     }
 
-    META.items[STATE.video_filename].clips[id] = cloneObj(META.projects.items[MP.prid].clips[id])
+    META.files[STATE.video_filename].clips[id] = cloneObj(META.projects.items[MP.prid].clips[id])
     saveMeta()
 }
 

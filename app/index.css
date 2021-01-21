@@ -36,9 +36,16 @@ body { background:blue;}
     text-align: center; z-index: 10; background: rgba(0, 0, 0, 0.75); color: white;
 }
 
+
 #first_load_info  { display: none;}
 
 #video_list {width: 100%; height:80%; overflow: auto; text-align: left;}
+#video_list img { height: 20px; margin-left: 5px; margin-right: 5px;}
+.video_list_path { width: 100%; text-align: center; font-size: 12px;}
+.video_list_folder { font-size: 15px; font-weight: bold; line-height: 15px;}
+.video_list_item { font-size: 15px; line-height: 15px;}
+.video_list_folder:hover {background:rgba(0, 0, 0, 0.99); }
+.video_list_item:hover {background:rgba(0, 0, 0, 0.99); }
 
 #clip_list {
     position: absolute; top: 0%; right: 0%; width: 20%; height:100%;
@@ -47,10 +54,11 @@ body { background:blue;}
 .clipcard {width: 90%; height:auto; margin-left: 5%; }
 .clipcard img {width: 100%; height:auto;}
 
-#file_choose_video { display:none;}
-.custom-file-upload {
+.file_chooser_btns {
+    width: 40%;
     border: 1px solid #ccc;
     display: inline-block;
     padding: 6px 12px;
     cursor: pointer;
 }
+.file_chooser_btns button { display:none;}

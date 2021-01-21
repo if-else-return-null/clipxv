@@ -36,9 +36,16 @@ BYID("video_list").addEventListener('click', (event) => {
   let fn = event.target.id
   if (FILES.items[fn]){
       console.log(FILES.items[fn]);
-      markClipClear()
-      loadVideoFile(fn)
+      if (FILES.items[fn].type === "folder") {
+          folderChooserUrl(FILES.paths[fn])
+      } else {
+
+          markClipClear()
+          loadVideoFile(fn)
+      }
+
   }
+
   //loadPrevClip(event.target.id)
 });
 BYID("project_selector").addEventListener('change', (event) => {
@@ -54,6 +61,7 @@ BYID("project_selector").addEventListener('change', (event) => {
 BYID("archive_clip_list").addEventListener('click', (event) => {
 
   let id = event.target.id.replace("arcimg_","").replace("arc_","")
+  if (id === "archive_clip_list") { return; }
   console.log('selected archived video clip ', id);
   let thisclip = META.items[STATE.video_filename].clips[id]
   markClipClear()

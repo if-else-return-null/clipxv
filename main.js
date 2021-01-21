@@ -22,7 +22,7 @@ function createWindow () {
   })
 
   // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
+  mainWindow.loadFile('app/index.html')
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
@@ -298,6 +298,21 @@ function runFiles(thisurl) {
                     //buildItemHtml(x, thisurl)
 
 
+                }
+                // test for video file extensions
+                if ( FILELIST[thisurl].items[x]["type"] === "file" && FILELIST[thisurl].items[x]["ext"] !== null) {
+                    console.log("testing extension");
+                    let extl = FILELIST[thisurl].items[x]["ext"].toLowerCase()
+                    if (extl === "mp4") {
+                        console.log("found mp4");
+                        FILELIST[thisurl].items[x]["ftype"] = "video/mp4"
+                    }
+                    if (extl === "ogg") {
+                        FILELIST[thisurl].items[x]["ftype"] = "video/ogg"
+                    }
+                    if (extl === "webm") {
+                        FILELIST[thisurl].items[x]["ftype"] = "video/webm"
+                    }
                 }
 
                 // if we have stats on all the items in the folder listing then show it
