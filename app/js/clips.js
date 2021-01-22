@@ -37,7 +37,7 @@ function markClipClear(){
     BYID("mark_clip_start_input").value = ""
     BYID("mark_clip_end_input").value = ""
     STATE.cur_clip_id = null
-    META.projects.items[MP.prid].clip_order.forEach((item, i) => {
+    MP.clip_order.forEach((item, i) => {
         BYID(item).style.outline = "none"
     });
 
@@ -57,18 +57,18 @@ function markClipSave(){
         id = generateUUIDv4()
         STATE.cur_clip_id = id
         //clip_order.push(id)
-        META.projects.items[MP.prid].clip_order.push(id)
+        MP.clip_order.push(id)
     }
     //let data = {}
-    if (!META.projects.items[MP.prid].clips[id]) {
-        META.projects.items[MP.prid].clips[id] = {}
+    if (!MP.clips[id]) {
+        MP.clips[id] = {}
     }
-    META.projects.items[MP.prid].clips[id].id = id
-    META.projects.items[MP.prid].clips[id].video_path = STATE.video_path
-    META.projects.items[MP.prid].clips[id].video_filename = STATE.video_filename
-    META.projects.items[MP.prid].clips[id].start = start.toFixed(3)
-    META.projects.items[MP.prid].clips[id].end = end.toFixed(3)
-    META.projects.items[MP.prid].clips[id].runtime = parseFloat(end - start).toFixed(3)
+    MP.clips[id].id = id
+    MP.clips[id].video_path = STATE.video_path
+    MP.clips[id].video_filename = STATE.video_filename
+    MP.clips[id].start = start.toFixed(3)
+    MP.clips[id].end = end.toFixed(3)
+    MP.clips[id].runtime = parseFloat(end - start).toFixed(3)
 
     function finishSave(){
         var canvas = document.createElement('canvas');
@@ -78,14 +78,14 @@ function markClipSave(){
         var ctx = canvas.getContext('2d');
         ctx.drawImage(vplayer, 0, 0, canvas.width, canvas.height);
 
-        META.projects.items[MP.prid].clips[id].thumb = canvas.toDataURL();
+        MP.clips[id].thumb = canvas.toDataURL();
         parseClipList()
         //seekClipStart()
         markClipClear()
         vplayer.currentTime = end
         // *** move to a seperte action *** save the clip to meta for this file
-        //META.files[STATE.video_filename].clips[id] = cloneObj(META.projects.items[MP.prid].clips[id])
-        saveMeta()
+        //META.files[STATE.video_filename].clips[id] = cloneObj(MP.clips[id])
+        saveMeta("mp")
         vplayer.removeEventListener("seeked", finishSave)
     }
     vplayer.currentTime = start
@@ -99,14 +99,14 @@ function markClipArchive(){
         return
     }
 
-    META.files[STATE.video_filename].clips[id] = cloneObj(META.projects.items[MP.prid].clips[id])
-    saveMeta()
+    META.files[STATE.video_filename].clips[id] = cloneObj(MP.clips[id])
+    saveMeta("files")
 }
 
 function parseClipList(){
     let str = ""
-    META.projects.items[MP.prid].clip_order.forEach((item, i) => {
-        let data = META.projects.items[MP.prid].clips[item]
+    MP.clip_order.forEach((item, i) => {
+        let data = MP.clips[item]
         str += `<div id="${item}" class="clipcard" >`
         str += `<img id ="img_${item}" src="${data.thumb}" />`
         str += `Start: &nbsp;${data.start} <br>`
@@ -115,7 +115,7 @@ function parseClipList(){
         str += `</div>`
     });
     BYID("clip_list").innerHTML = str
-    META.projects.items[MP.prid].clip_order.forEach((item, i) =>{
+    MP.clip_order.forEach((item, i) =>{
         BYID(item).addEventListener('click', (event) => {
           console.log('selected clip ', event.target.id);
           loadPrevClip(event.target.id)
@@ -128,7 +128,7 @@ function parseClipList(){
 function loadPrevClip(id) {
     id = id.replace("img_", "")
     console.log("loadPrevClip ", id);
-    let thisclip = META.projects.items[MP.prid].clips[id]
+    let thisclip = MP.clips[id]
     vplayerPause()
     BYID("mark_clip_start_input").value = parseFloat(thisclip.start)
     BYID("mark_clip_end_input").value = parseFloat(thisclip.end)
@@ -138,7 +138,7 @@ function loadPrevClip(id) {
     //*** maybe need to catch a loaed event here befor procedding
     vplayer.currentTime = parseFloat(thisclip.start)
     STATE.cur_clip_id = id
-    META.projects.items[MP.prid].clip_order.forEach((item, i) => {
+    MP.clip_order.forEach((item, i) => {
         BYID(item).style.outline = "none"
     });
     BYID(id).style.outline = "1px solid blue"
@@ -157,12 +157,12 @@ function cancelDeleteClip() {
 function confirmDeleteClip() {
     console.log("deleting current clip");
     BYID("clip_confirm_delete_area").style.display = "none"
-    delete META.projects.items[MP.prid].clips[STATE.cur_clip_id]
+    delete MP.clips[STATE.cur_clip_id]
     // remove from clip_order
-    let cindex = META.projects.items[MP.prid].clip_order.indexOf(STATE.cur_clip_id)
-    let removed = META.projects.items[MP.prid].clip_order.splice(cindex,1)
+    let cindex = MP.clip_order.indexOf(STATE.cur_clip_id)
+    let removed = MP.clip_order.splice(cindex,1)
     BYID("clip_list").removeChild( BYID(STATE.cur_clip_id) )
     console.log("clip_order index,value :", cindex, removed);
-    saveMeta()
+    saveMeta("mp")
     markClipClear()
 }

@@ -82,8 +82,8 @@ if (META.projects.prid === null) {
     folderChooserHome()
 
 } else {
-    console.log("test",MP.prid, META.projects.items[MP.prid]);
-    folderChooserUrl(META.projects.items[MP.prid].folder)
+    console.log("test",META.projects.prid, MP);
+    folderChooserUrl(MP.folder)
     parseClipList()
     parseProjectList()
     setTimeout(function(){

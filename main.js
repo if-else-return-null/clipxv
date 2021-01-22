@@ -64,6 +64,7 @@ setTimeout(function (){
     //mainWindow.webContents.send("from_mainProcess",{type:"greet", msg:"hello", files:FILELIST[user_home]})
 },5000)
 
+//*** debug path for win32
 
 let FILELIST = {}
 let CWD = user_home

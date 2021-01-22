@@ -25,25 +25,35 @@ let META = {}
 META.files = {}
 META.projects = { prid:null,  items:{} } //e2d7767b-75f3-4b5d-b18a-6c52e18a6b47
 
-let MP = META.projects
+let MP //= META.projects
 let STATE = {}
 
 STATE.cur_clip_id = null
 STATE.first_load_info_visible = true
 STATE.file_chooser_path = null
 
-if (localStorage.getItem("meta")){
-    console.log("found meta storage");
-    META = JSON.parse(localStorage.getItem("meta"))
-    MP = META.projects
-    //CLIPS = META.projects.items[META.projects.prid].clips
-    //clip_order = META.projects.items[META.projects.prid].clip_order
+if (localStorage.getItem("files")){
+    console.log("found meta files storage");
+    META.files = JSON.parse(localStorage.getItem("files"))
+    META.projects = JSON.parse(localStorage.getItem("projects"))
+    MP = JSON.parse(localStorage.getItem(META.projects.prid))
+    
 
 } else {
     console.log("Creating meta storage");
-    localStorage.setItem("meta",JSON.stringify(META))
+    localStorage.setItem("files",JSON.stringify(META.files))
+    localStorage.setItem("projects",JSON.stringify(META.projects))
 }
 
-function saveMeta(){
-    localStorage.setItem("meta",JSON.stringify(META))
+function saveMeta(type = "all"){
+    if (type === "files" || type === "all" ) {
+        localStorage.setItem("files",JSON.stringify(META.files))
+    }
+    if (type === "projects" || type === "all" ) {
+        localStorage.setItem("projects",JSON.stringify(META.projects))
+    }
+    if (type === "mp" || type === "all" ) {
+        localStorage.setItem(META.projects.prid,JSON.stringify(MP))
+    }
+
 }

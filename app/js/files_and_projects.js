@@ -10,9 +10,8 @@ function parseProjectList () {
     let str = ""
     for ( let item in META.projects.items ) {
         let selected = ""
-        let data = META.projects.items[item]
-        if (item === MP.prid) { selected = "selected"}
-        str += `<option ${selected} value="${item}" >${data.name}</option>`
+        if (item === META.projects.prid) { selected = "selected"}
+        str += `<option ${selected} value="${item}" >${META.projects.items[item]}</option>`
     }
 
 
@@ -21,13 +20,16 @@ function parseProjectList () {
 
 function createNewProject(){
     META.projects.prid = generateUUIDv4()
-    META.projects.items[MP.prid] = {
+    MP = {
+        id:META.projects.prid,
         name:"untitled",
         folder:STATE.file_chooser_path,
         clips:{} ,
         clip_order:[]
     }
-    saveMeta()
+    META.projects.items[META.projects.prid] = MP.name
+    saveMeta("projects")
+    saveMeta("mp")
     parseClipList()
     parseProjectList()
     markClipClear()
@@ -35,9 +37,11 @@ function createNewProject(){
 
 function renameProject() {
     let newname = BYID("project_rename_input").value.trim()
-    if (newname === "" || newname === "" ) { console.log("invalid name"); return;  }
-    META.projects.items[MP.prid].name = newname
-    saveMeta()
+    if (newname === "" || newname === " " ) { console.log("invalid name"); return;  }
+    MP.name = newname
+    META.projects.items[META.projects.prid] = newname
+    saveMeta("projects")
+    saveMeta("mp")
     parseProjectList()
 }
 
@@ -52,7 +56,8 @@ function cancelDeleteProject() {
 function confirmDeleteProject() {
     console.log("deleting current project");
     BYID("project_confirm_delete_area").style.display = "none"
-    delete META.projects.items[MP.prid]
+    localStorage.removeItem(META.projects.prid)
+    delete META.projects.items[META.projects.prid]
     createNewProject()
 }
 
@@ -98,62 +103,6 @@ function folderChooserUrl(url) {
     capi.ipcSend("from_mainWindow",{ type:"request_file_list", url:url })
 }
 
-//*** debug path for win32
-function setVideoFolder(){
-    /*
-    if (STATE.first_load_info_visible === true) {
-        console.log("clearing first load");
-        STATE.first_load_info_visible = false
-        BYID("first_load_info").style.display = "none"
-        BYID("video_list_cont").style.width = "20%"
-    }
-    */
-    let temp = BYID("file_choose_video").files
-    FILES = { items:{}, list:[] }
-    let basefolder
-    for (var i = 0; i < temp.length; i++) {
-        let fname = temp[i].name
-        if (i === 0) {
-            console.log("got first item");
-            basefolder = temp[i].webkitRelativePath.split("/")[0]
-            //FILES.folders[basefolder] = {}
-        }
-        //console.log(temp[i]);
-
-        FILES.items[fname] = {
-            path:temp[i].path,
-            name:temp[i].name,
-            size:temp[i].size,
-            ftype:temp[i].type,
-
-        }
-        FILES.list.push(temp[i].webkitRelativePath.replace(basefolder + "/", ""))
-        let str = {o:{},a:[""]}
-        FILES.list.forEach((item, i) => {
-            let parts = item.split("/")
-            let fn = parts[ parts.length-1 ]
-            if (parts.length === 1) {
-                str.a[0] +=`<div id="${fn}" class="video_list_item" >${item}</div>`
-            } else {
-                if (!str.o[parts[0]]) {
-
-                    str.a.push(`<div class="video_list_folder" >${parts[0]}</div>`)
-                    str.o[parts[0]] = str.a.length -1
-                }
-                str.a[str.o[parts[0]]] +=`<div id="${fn}" class="video_list_item" >${item.replace(parts[0],"")}</div>`
-            }
-        });
-        //console.log();
-        BYID("video_list").innerHTML = str.a.join("<br>") //+ str.a.join("<br>") + str.a.join("<br>") + str.a.join("<br>")
-
-
-    }
-    FILES.list.sort()
-    console.log("basefolder", basefolder)
-    console.log(FILES)
-
-
-}
 
 function loadVideoFile(fn,id = null ) {
     console.log("loadVideoFile ",fn, id);
@@ -162,8 +111,8 @@ function loadVideoFile(fn,id = null ) {
         path = FILES.items[fn].path
         name = FILES.items[fn].name
     } else {
-        path = META.projects.items[MP.prid].clips[id].video_path
-        name = META.projects.items[MP.prid].clips[id].video_filename
+        path = MP.clips[id].video_path
+        name = MP.clips[id].video_filename
     }
     BYID("vplayer").src = path
     STATE.video_filename = name
@@ -172,7 +121,7 @@ function loadVideoFile(fn,id = null ) {
         // create clip data for file
         META.files[STATE.video_filename] = {clips:{}}
         console.log("create empty video file archive data",META.files[STATE.video_filename]);
-        saveMeta()
+        saveMeta("files")
     }
     console.log("load video file archive data",META.files[STATE.video_filename]);
     if (id === null) {vplayer.currentTime = parseFloat(0.01)}
@@ -194,19 +143,13 @@ function parseArchivedClips() {
 }
 
 
-//*** below here not used at this time
-setTimeout(function (){
-    //capi.ipcSend("from_mainWindow",{type:"greet", msg:"hello"})
-},5000)
-
-
 function handleFromMainProcess(data) {
     //console.log("from_mainProcess", data);
     if (data.type = "file_chooser_path") {
         FILES = data.files
         STATE.file_chooser_path = data.root
-        META.projects.items[MP.prid].folder = data.root
-        saveMeta()
+        MP.folder = data.root
+        saveMeta("mp")
         parseFolderView(data.root)
         /*
         if (STATE.first_load_info_visible === false) {
