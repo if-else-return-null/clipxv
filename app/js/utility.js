@@ -13,9 +13,11 @@ let time_update_text = document.getElementById("time_update_text")
 
 function vplayerPlay(){
     vplayer.play()
+    vplayer.focus()
 }
 function vplayerPause(){
     vplayer.pause()
+    vplayer.focus()
 }
 
 
@@ -33,7 +35,7 @@ STATE.first_load_info_visible = true
 STATE.file_chooser_path = null
 STATE.video_path = null
 STATE.video_filename = null
- 
+
 if (localStorage.getItem("files")){
     console.log("found meta files storage");
     META.files = JSON.parse(localStorage.getItem("files"))

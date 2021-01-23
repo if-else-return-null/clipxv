@@ -1,20 +1,35 @@
 
 body { background:blue;}
 
-#mid_area { position: absolute; top: 0%; left: 20%; width: 60%; height:100%;   }
+#mid_area { position: absolute; top: 0%; left: 20%; width: 60%; height:100%; background: rgba(0, 0, 0, 0.5);  }
 
 #vplayer { width: 100%; height:auto; margin:0;  }
 
 #clip_controls {
-    width: 100%; height:auto; background: rgba(0, 0, 0, 0.5); color: white;
+    width: 100%; height:auto;  color: white;
     border-top: 2px solid white; margin:0; margin-top: -4px;
 }
 
 .time_input { width:100px;}
 .sub_control { padding:10px; text-align: center;}
 
-#time_update_text { width:30%; font-size: 75%; display: inline-block; text-align: center;}
-#sub_controls_1 { width: 30%; display: inline-block;text-align: center;}
+#time_update_text {
+    width:125px; font-size: 75%; display: inline-block; text-align: center;
+    border: 1px inset black; margin-bottom: 5px;
+}
+#sub_controls_1 { width: 100%; text-align: center;}
+#sub_controls_1 table { width:100%; }
+#sub_controls_1 table td {  /*border: 1px solid black;*/ }
+.far_left_clip_control { text-align: left;}
+.left_clip_control { text-align: right;}
+.mid_clip_control { text-align: center;}
+.mid_clip_control button { background: none; }
+.skip_buttons { padding: 1px;}
+.skip_buttons img {width: 50%;}
+.right_clip_control { text-align: left;}
+.far_right_clip_control { text-align: right;}
+
+
 #sub_controls_2 { width: 30%; display: inline-block;text-align: center;}
 
 #sub_controls_4 { width: 45%;  height:140px;  display: inline-block; text-align: center;}
