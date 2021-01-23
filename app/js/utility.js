@@ -31,13 +31,15 @@ let STATE = {}
 STATE.cur_clip_id = null
 STATE.first_load_info_visible = true
 STATE.file_chooser_path = null
-
+STATE.video_path = null
+STATE.video_filename = null
+ 
 if (localStorage.getItem("files")){
     console.log("found meta files storage");
     META.files = JSON.parse(localStorage.getItem("files"))
     META.projects = JSON.parse(localStorage.getItem("projects"))
     MP = JSON.parse(localStorage.getItem(META.projects.prid))
-    
+
 
 } else {
     console.log("Creating meta storage");

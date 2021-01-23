@@ -33,6 +33,7 @@ function createNewProject(){
     parseClipList()
     parseProjectList()
     markClipClear()
+    clearVplayer()
 }
 
 function renameProject() {
@@ -40,6 +41,7 @@ function renameProject() {
     if (newname === "" || newname === " " ) { console.log("invalid name"); return;  }
     MP.name = newname
     META.projects.items[META.projects.prid] = newname
+    BYID("project_rename_input").value = ""
     saveMeta("projects")
     saveMeta("mp")
     parseProjectList()
@@ -104,15 +106,27 @@ function folderChooserUrl(url) {
 }
 
 
-function loadVideoFile(fn,id = null ) {
+function clearVplayer() {
+    BYID("vplayer").src = ""
+    STATE.video_filename = null
+    STATE.video_path = null
+    time_update_text.textContent = vplayer.currentTime
+}
+
+function loadVideoFile(fn , id = null ) {
     console.log("loadVideoFile ",fn, id);
     let path, name
+
     if (id === null) {
         path = FILES.items[fn].path
         name = FILES.items[fn].name
     } else {
         path = MP.clips[id].video_path
         name = MP.clips[id].video_filename
+    }
+    if ( path === null || name === null ){
+        console.log("loadVideoFile: Bad path or name. ");
+        return
     }
     BYID("vplayer").src = path
     STATE.video_filename = name

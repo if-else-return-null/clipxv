@@ -52,9 +52,13 @@ BYID("project_selector").addEventListener('change', (event) => {
   console.log('selected project is ', BYID(event.target.id).value);
 
   META.projects.prid = BYID(event.target.id).value
+  saveMeta("projects")
+  MP = JSON.parse(localStorage.getItem(META.projects.prid))
   parseClipList()
   parseProjectList()
   markClipClear()
+  folderChooserUrl(MP.folder)
+  clearVplayer()
 });
 
 

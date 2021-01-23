@@ -45,13 +45,31 @@ function markClipClear(){
 
 
 function markClipSave(){
-    let start = parseFloat(BYID("mark_clip_start_input").value)
-    let end = parseFloat(BYID("mark_clip_end_input").value)
+    if ( STATE.video_path === null || STATE.video_filename === null ){
+        console.log("markClipSave: Bad video path or name. ");
+        return
+    }
+
+    //console.log("markClipSave:  ",BYID("mark_clip_start_input").value,BYID("mark_clip_end_input").value);
+    let start = BYID("mark_clip_start_input").value.trim()
+    let end = BYID("mark_clip_end_input").value.trim()
+    //console.log(`markClipSave: --${start}==${end}--`);
+    if ( start === end || start === "" || end === "" ) {
+        console.log("markClipSave: Bad video path or name. ");
+        return;
+    }
+
+
+    start = parseFloat(start)
+    end = parseFloat(end)
+    //console.log(`markClipSave:parsedFloat --${typeof(start)}==${end}--`);
+
     //*** check for 0 or negative length values
-    if ( end <= start ) {
+    if ( end <= start || isNaN(start)  || isNaN(end)  ) {
         console.log("Invalid Time / length", start, end );
         return
     }
+
     let id = STATE.cur_clip_id
     if (id === null) {
         id = generateUUIDv4()
