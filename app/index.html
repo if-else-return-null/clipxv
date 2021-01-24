@@ -49,27 +49,38 @@
                              <input type="number" class="time_input" step="1" id="mark_clip_start_input" value="">
                              <br>
                              <button type="button" id="mark_clip_start_btn">Start Clip</button>
+                             <br>
+                              <button type="button" id="seek_clip_start_btn">Seek</button>
                          </td>
                          <td class="mid_clip_control">
-                            <div id="time_update_text">0</div>
+                            <div id="time_update_text" title="Current Time">0</div>
                             <br>
                             <button type="button" class="skip_buttons" id="" title="Play"><img src="assets/skip-back.svg" alt=""></button>
-                            <button type="button" id="clip_play_btn" title="Play"><img src="assets/play.svg" alt=""></button>
-                            <button type="button" id="clip_pause_btn" title="Pause"><img src="assets/pause.svg" alt=""></button>
+                            <button type="button" class="play_pause_buttons" id="clip_play_btn" title="Play"><img src="assets/play.svg" alt=""></button>
+                            <button type="button"  class="play_pause_buttons" id="clip_pause_btn" title="Pause"><img src="assets/pause.svg" alt=""></button>
                             <button type="button" class="skip_buttons" id="" title="Play"><img src="assets/skip-forward.svg" alt=""></button>
+                            <br>
+                            <button type="button" id="play_whole_clip_btn">Play Clip</button>
                          </td>
 
                          <td class="right_clip_control">
                              <input type="number" class="time_input" step="1" id="mark_clip_end_input" value="">
                              <br>
                              <button type="button" id="mark_clip_end_btn">End Clip</button>
+                             <br>
+                             <button type="button"  id="seek_clip_end_btn">Seek</button>
+
                          </td>
                          <td class="far_right_clip_control">
-                             <button type="button" id="mark_clip_archive_btn">Save for Later</button>
-                             <br>
-                             <button type="button" id="clip_delete_btn">Delete Clip</button>
+                             <span id="clip_delete_area">
+                                 <button type="button" id="mark_clip_archive_btn">Archive Clip</button>
+                                 <br>
+                                 <button type="button" id="clip_delete_btn">Delete Clip</button>
+                             </span>
+
                              <span id="clip_confirm_delete_area">
                                  <button type="button" id="clip_confirm_delete_btn">Confirm Delete</button>
+                                 <br>
                                  <button type="button" id="clip_cancel_delete_btn">Cancel</button>
                              </span>
                          </td>
@@ -80,13 +91,12 @@
             </div>
              <!--
              <div id="sub_controls_2" class="sub_control">
-             <button type="button" id="seek_clip_start_btn">Seek</button>
+
 
 
              <br>
 
 
-             <button type="button" id="seek_clip_end_btn">Seek</button>
              </div>
              <hr>
 

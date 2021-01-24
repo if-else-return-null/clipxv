@@ -22,8 +22,8 @@ BYID("clip_pause_btn").addEventListener('click', vplayerPause)
 BYID("mark_clip_start_btn").addEventListener('click', markClipStart)
 BYID("mark_clip_end_btn").addEventListener('click', markClipEnd)
 
-//BYID("seek_clip_start_btn").addEventListener('click', seekClipStart)
-//BYID("seek_clip_end_btn").addEventListener('click', seekClipEnd)
+BYID("seek_clip_start_btn").addEventListener('click', seekClipStart)
+BYID("seek_clip_end_btn").addEventListener('click', seekClipEnd)
 
 BYID("project_new_btn").addEventListener('click', createNewProject)
 BYID("project_rename_btn").addEventListener('click', renameProject)

@@ -165,19 +165,19 @@ function loadPrevClip(id) {
 
 
 function deleteClip() {
-    BYID("clip_delete_btn").style.display = "none"
+    BYID("clip_delete_area").style.display = "none"
     BYID("clip_confirm_delete_area").style.display = "inline-block"
 }
 
 function cancelDeleteClip() {
     BYID("clip_confirm_delete_area").style.display = "none"
-    BYID("clip_delete_btn").style.display = "inline-block"
+    BYID("clip_delete_area").style.display = "inline-block"
 }
 
 function confirmDeleteClip() {
     console.log("deleting current clip");
     BYID("clip_confirm_delete_area").style.display = "none"
-    BYID("clip_delete_btn").style.display = "inline-block"
+    BYID("clip_delete_area").style.display = "inline-block"
     delete MP.clips[STATE.cur_clip_id]
     // remove from clip_order
     let cindex = MP.clip_order.indexOf(STATE.cur_clip_id)

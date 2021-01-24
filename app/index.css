@@ -13,21 +13,33 @@ body { background:blue;}
 .time_input { width:100px;}
 .sub_control { padding:10px; text-align: center;}
 
+
 #time_update_text {
-    width:125px; font-size: 75%; display: inline-block; text-align: center;
-    border: 1px inset black; margin-bottom: 5px;
+    width:125px; height: 20px; font-size: 75%; line-height: 20px; display: inline-block;
+    text-align: center; border: 1px inset black; margin-bottom: 5px; background:white; color:blue;
 }
-#sub_controls_1 { width: 100%; text-align: center;}
-#sub_controls_1 table { width:100%; }
+#sub_controls_1 { width: calc(100% - 20px); text-align: center;}
+#sub_controls_1 table { width: 100%; }
 #sub_controls_1 table td {  /*border: 1px solid black;*/ }
 .far_left_clip_control { text-align: left;}
+.far_left_clip_control button { width: 104px; height: 50px; background: none; color: white; margin:2px;}
+
 .left_clip_control { text-align: right;}
+.left_clip_control button { width: 104px; height: 50px; background: none; color: white; margin:2px;}
+#seek_clip_start_btn { margin-top:10px; height:20px;}
 .mid_clip_control { text-align: center;}
 .mid_clip_control button { background: none; }
-.skip_buttons { padding: 1px;}
-.skip_buttons img {width: 50%;}
+.play_pause_buttons { width: 50px; height: 50px;}
+.skip_buttons { padding: 1px; width: 25px; height: 25px;}
+.skip_buttons img {width: 100%;}
+#play_whole_clip_btn { margin-top:10px; width:100px; height:25px; color: white;}
+
 .right_clip_control { text-align: left;}
+.right_clip_control button { width: 104px;  height: 50px; background: none; color: white;margin:2px;}
+#seek_clip_end_btn { margin-top:10px; height:20px;}
+
 .far_right_clip_control { text-align: right;}
+.far_right_clip_control button { width: 104px; height: 50px; background: none; color: white; margin:2px;}
 
 
 #sub_controls_2 { width: 30%; display: inline-block;text-align: center;}
