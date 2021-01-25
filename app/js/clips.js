@@ -30,13 +30,47 @@ function seekClipEnd(){
 
 }
 
+function seekClipTime(e) {
+    if (STATE.cur_clip_id === null) {
+        return
+    }
+    //console.log("seeked by time ",e);
+    let ids = e.target.id.split("_")
+    let time = ids.pop()
+    let dir = ids.pop()
+    time = time * 60
+    console.log("seeked by time ",dir, time);
+    let newtime
+    if ( dir === "back") {
+        newtime = vplayer.currentTime - time
+    } else {
+        newtime = vplayer.currentTime + time
+    }
 
+    if (newtime < 0) { newtime = 0  }
+    else if ( newtime > vplayer.duration  ) { newtime = vplayer.duration  }
+    vplayer.currentTime = newtime
+}
+
+function playWholeClip() {
+    if (STATE.cur_clip_id === null) {
+        return
+    }
+    let clip = MP.clips[STATE.cur_clip_id]
+    vplayer.currentTime = clip.start
+    STATE.playing_whole_clip = true
+    vplayerPlay()
+
+
+}
 
 function markClipClear(){
     vplayerPause()
     BYID("mark_clip_start_input").value = ""
     BYID("mark_clip_end_input").value = ""
+    cancelDeleteClip()
     STATE.cur_clip_id = null
+    STATE.playing_whole_clip = false
     MP.clip_order.forEach((item, i) => {
         BYID(item).style.outline = "none"
     });
@@ -119,6 +153,7 @@ function markClipArchive(){
 
     META.files[STATE.video_filename].clips[id] = cloneObj(MP.clips[id])
     saveMeta("files")
+    parseArchivedClips()
 }
 
 function parseClipList(){
@@ -148,6 +183,7 @@ function loadPrevClip(id) {
     console.log("loadPrevClip ", id);
     let thisclip = MP.clips[id]
     vplayerPause()
+    STATE.playing_whole_clip = false
     BYID("mark_clip_start_input").value = parseFloat(thisclip.start)
     BYID("mark_clip_end_input").value = parseFloat(thisclip.end)
     // set the vplayer src
@@ -156,6 +192,7 @@ function loadPrevClip(id) {
     //*** maybe need to catch a loaed event here befor procedding
     vplayer.currentTime = parseFloat(thisclip.start)
     STATE.cur_clip_id = id
+
     MP.clip_order.forEach((item, i) => {
         BYID(item).style.outline = "none"
     });

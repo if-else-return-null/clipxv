@@ -72,8 +72,20 @@ function runFiles(thisurl) {
         console.log("FL--> Starting a folder listing", thisurl);
         if (thisurl === "home") { thisurl = user_home }
         if (thisurl === "parent") {
-            console.log("Parent folder requested");
+            let parent_path = CWD.split("/")
+            console.log("parent length: ",parent_path.length);
+            if (parent_path.length > 2) {
+                let rcwd = parent_path.pop()
+                parent_path = parent_path.join("/")
+                console.log("Parent folder requested ", parent_path);
+                thisurl = parent_path
+            } else {
+                // moving into root
+                thisurl = "/"
+            }
+
         }
+        let prev_url = CWD
         CWD = thisurl
         console.log("FL--> Starting a folder listing", thisurl);
         startread = new Date();
@@ -97,8 +109,9 @@ function runFiles(thisurl) {
         } catch(err) {
             console.log("Scan Dir error", err);
             //showFileListError(err)
-            //delete FILELIST[thisurl]
-            //return
+            delete FILELIST[thisurl]
+            runFiles(prev_url)
+            return
         }
 
         //console.log("--> Loading path from disk",filelist);
@@ -106,10 +119,12 @@ function runFiles(thisurl) {
 
         //ById("itemcount")
         for (let x = 0; x < filelist.length; x++) {
-            FILELIST[thisurl].paths[x] = thisurl+"/"+filelist[x]
+            let thispath = thisurl+"/"+filelist[x]
+            if (thisurl === "/"){ thispath = thisurl+filelist[x] }
+            FILELIST[thisurl].paths[x] = thispath
             FILELIST[thisurl].items[x] = {
                 id:x,
-                path:thisurl+"/"+filelist[x],
+                path:thispath,
                 location:thisurl,
                 name:filelist[x]
             }
@@ -135,10 +150,88 @@ function runFiles(thisurl) {
             }
             // get item stats
             fs.lstat(FILELIST[thisurl].paths[x], {}, function(err,stats) {
+                FILELIST[thisurl].curid += 1
                 // check to see if we got stats
                 if ( stats === undefined) {
                     //stats = fs.lstatSync(FILELIST[thisurl].paths[x])
                     console.log("stats undefined ", err);
+
+                } else {
+                    FILELIST[thisurl].items[x]["dev"] = stats.dev
+                    //<number> | <bigint>
+                    //The numeric identifier of the device containing the file.
+
+                    FILELIST[thisurl].items[x]["ino"] = stats.ino
+                    //<number> | <bigint>
+                    //The file system specific "Inode" number for the file.
+
+                    FILELIST[thisurl].items[x]["mode"] = stats.mode
+                    //<number> | <bigint>
+                    //A bit-field describing the file type and mode.
+
+                    FILELIST[thisurl].items[x]["perms"] = '0' + (stats.mode & parseInt('777', 8)).toString(8);
+                    // human readable file permissions string
+
+                    FILELIST[thisurl].items[x]["nlink"] = stats.nlink
+                    //<number> | <bigint>
+                    //The number of hard-links that exist for the file.
+
+                    FILELIST[thisurl].items[x]["uid"] = stats.uid
+                    //<number> | <bigint>
+                    //The numeric user identifier of the user that owns the file (POSIX).
+
+                    FILELIST[thisurl].items[x]["gid"] = stats.gid
+                    //<number> | <bigint>
+                    //The numeric group identifier of the group that owns the file (POSIX).
+
+                    FILELIST[thisurl].items[x]["rdev"] = stats.rdev
+                    //<number> | <bigint>
+                    //A numeric device identifier if the file is considered "special".
+
+                    FILELIST[thisurl].items[x]["size"] = stats.size
+                    //<number> | <bigint>
+                    //The size of the file in bytes.
+
+                    FILELIST[thisurl].items[x]["blksize"] = stats.blksize
+                    //<number> | <bigint>
+                    //The file system block size for i/o operations.
+
+                    FILELIST[thisurl].items[x]["blocks"] = stats.blocks
+                    //<number> | <bigint>
+                    //The number of blocks allocated for this file.
+
+                    FILELIST[thisurl].items[x]["atimeMs"] = stats.atimeMs
+                    //<number> | <bigint>
+                    //The timestamp indicating the last time this file was accessed expressed in milliseconds since the POSIX Epoch.
+
+                    FILELIST[thisurl].items[x]["mtimeMs"] = stats.mtimeMs
+                    //<number> | <bigint>
+                    //The timestamp indicating the last time this file was modified expressed in milliseconds since the POSIX Epoch.
+
+                    FILELIST[thisurl].items[x]["ctimeMs"] = stats.ctimeMs
+                    //<number> | <bigint>
+                    //The timestamp indicating the last time the file status was changed expressed in milliseconds since the POSIX Epoch.
+
+                    FILELIST[thisurl].items[x]["birthtimeMs"] = stats.birthtimeMs
+                    //<number> | <bigint>
+                    //The timestamp indicating the creation time of this file expressed in milliseconds since the POSIX Epoch.
+
+                    FILELIST[thisurl].items[x]["atime"] = stats.atime
+                    //<Date>
+                    //The timestamp indicating the last time this file was accessed.
+
+                    FILELIST[thisurl].items[x]["mtime"] = stats.mtime
+                    //<Date>
+                    //The timestamp indicating the last time this file was modified.
+
+                    FILELIST[thisurl].items[x]["ctime"] = stats.ctime
+                    //<Date>
+                    //The timestamp indicating the last time the file status was changed.
+
+                    FILELIST[thisurl].items[x]["birthtime"] = stats.birthtime
+                    //<Date>
+                    //The timestamp indicating the creation time of this file.
+
 
                 }
 
@@ -146,83 +239,8 @@ function runFiles(thisurl) {
 
                 //console.log(stats);
 
-                FILELIST[thisurl].curid += 1
+
                 //FILELIST.items[x][""]
-
-                FILELIST[thisurl].items[x]["dev"] = stats.dev
-                //<number> | <bigint>
-                //The numeric identifier of the device containing the file.
-
-                FILELIST[thisurl].items[x]["ino"] = stats.ino
-                //<number> | <bigint>
-                //The file system specific "Inode" number for the file.
-
-                FILELIST[thisurl].items[x]["mode"] = stats.mode
-                //<number> | <bigint>
-                //A bit-field describing the file type and mode.
-
-                FILELIST[thisurl].items[x]["perms"] = '0' + (stats.mode & parseInt('777', 8)).toString(8);
-                // human readable file permissions string
-
-                FILELIST[thisurl].items[x]["nlink"] = stats.nlink
-                //<number> | <bigint>
-                //The number of hard-links that exist for the file.
-
-                FILELIST[thisurl].items[x]["uid"] = stats.uid
-                //<number> | <bigint>
-                //The numeric user identifier of the user that owns the file (POSIX).
-
-                FILELIST[thisurl].items[x]["gid"] = stats.gid
-                //<number> | <bigint>
-                //The numeric group identifier of the group that owns the file (POSIX).
-
-                FILELIST[thisurl].items[x]["rdev"] = stats.rdev
-                //<number> | <bigint>
-                //A numeric device identifier if the file is considered "special".
-
-                FILELIST[thisurl].items[x]["size"] = stats.size
-                //<number> | <bigint>
-                //The size of the file in bytes.
-
-                FILELIST[thisurl].items[x]["blksize"] = stats.blksize
-                //<number> | <bigint>
-                //The file system block size for i/o operations.
-
-                FILELIST[thisurl].items[x]["blocks"] = stats.blocks
-                //<number> | <bigint>
-                //The number of blocks allocated for this file.
-
-                FILELIST[thisurl].items[x]["atimeMs"] = stats.atimeMs
-                //<number> | <bigint>
-                //The timestamp indicating the last time this file was accessed expressed in milliseconds since the POSIX Epoch.
-
-                FILELIST[thisurl].items[x]["mtimeMs"] = stats.mtimeMs
-                //<number> | <bigint>
-                //The timestamp indicating the last time this file was modified expressed in milliseconds since the POSIX Epoch.
-
-                FILELIST[thisurl].items[x]["ctimeMs"] = stats.ctimeMs
-                //<number> | <bigint>
-                //The timestamp indicating the last time the file status was changed expressed in milliseconds since the POSIX Epoch.
-
-                FILELIST[thisurl].items[x]["birthtimeMs"] = stats.birthtimeMs
-                //<number> | <bigint>
-                //The timestamp indicating the creation time of this file expressed in milliseconds since the POSIX Epoch.
-
-                FILELIST[thisurl].items[x]["atime"] = stats.atime
-                //<Date>
-                //The timestamp indicating the last time this file was accessed.
-
-                FILELIST[thisurl].items[x]["mtime"] = stats.mtime
-                //<Date>
-                //The timestamp indicating the last time this file was modified.
-
-                FILELIST[thisurl].items[x]["ctime"] = stats.ctime
-                //<Date>
-                //The timestamp indicating the last time the file status was changed.
-
-                FILELIST[thisurl].items[x]["birthtime"] = stats.birthtime
-                //<Date>
-                //The timestamp indicating the creation time of this file.
 
 
 

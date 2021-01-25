@@ -1,5 +1,5 @@
 
-body { background:blue;}
+body { background:blue; overflow: hidden;}
 
 #mid_area { position: absolute; top: 0%; left: 20%; width: 60%; height:100%; background: rgba(0, 0, 0, 0.5);  }
 
@@ -76,7 +76,7 @@ body { background:blue;}
 
 #clip_list {
     position: absolute; top: 0%; right: 0%; width: 20%; height:100%;
-    background: rgba(0, 0, 0, 0.75); color: white;
+    background: rgba(0, 0, 0, 0.75); color: white; overflow: auto;
 }
 .clipcard {width: 90%; height:auto; margin-left: 5%; }
 .clipcard img {width: 100%; height:auto;}

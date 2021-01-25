@@ -2,6 +2,13 @@
 vplayer.addEventListener('timeupdate', (event) => {
   //console.log('The currentTime attribute has been updated. Again.');
   time_update_text.textContent = vplayer.currentTime
+  if (STATE.playing_whole_clip === true) {
+      // check for clip end
+      if( vplayer.currentTime >= MP.clips[STATE.cur_clip_id].end) {
+          vplayerPause()
+          STATE.playing_whole_clip = false
+      }
+  }
 });
 
 
@@ -14,16 +21,22 @@ BYID("mark_clip_archive_btn").addEventListener('click', markClipArchive)
 BYID("clip_delete_btn").addEventListener('click', deleteClip)
 BYID("clip_confirm_delete_btn").addEventListener('click', confirmDeleteClip)
 BYID("clip_cancel_delete_btn").addEventListener('click', cancelDeleteClip)
+BYID("play_whole_clip_btn").addEventListener('click', playWholeClip)
 
 
 BYID("clip_play_btn").addEventListener('click', vplayerPlay)
 BYID("clip_pause_btn").addEventListener('click', vplayerPause)
+BYID("seek_clip_start_btn").addEventListener('click', seekClipStart)
+BYID("seek_clip_end_btn").addEventListener('click', seekClipEnd)
+BYID("time_ahead_1").addEventListener('click', seekClipTime)
+BYID("time_ahead_5").addEventListener('click', seekClipTime)
+BYID("time_back_1").addEventListener('click', seekClipTime)
+BYID("time_back_5").addEventListener('click', seekClipTime)
 
 BYID("mark_clip_start_btn").addEventListener('click', markClipStart)
 BYID("mark_clip_end_btn").addEventListener('click', markClipEnd)
 
-BYID("seek_clip_start_btn").addEventListener('click', seekClipStart)
-BYID("seek_clip_end_btn").addEventListener('click', seekClipEnd)
+
 
 BYID("project_new_btn").addEventListener('click', createNewProject)
 BYID("project_rename_btn").addEventListener('click', renameProject)

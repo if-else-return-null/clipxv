@@ -16,15 +16,16 @@
              <br>
              <h2>Where are you video files?<br></h2>
          </div>
-         <label class="file_chooser_btns">
+         <label class="file_chooser_btns" title="Home Folder">
+
              <button type="button" id="file_choose_video_home"></button>
              <!--<input type="file" id="file_choose_video" webkitdirectory directory value="">-->
-            Home
+            <img src="assets/folder_home.png" alt="">
         </label>
-        <label class="file_chooser_btns">
+        <label class="file_chooser_btns" title="Parent Folder">
             <button type="button" id="file_choose_video_parent"></button>
             <!--<input type="file" id="file_choose_video" webkitdirectory directory value="">-->
-            Parent
+            <img src="assets/folder_parent.png" alt="">
        </label>
          <hr>
          <div id="video_list">
@@ -55,10 +56,12 @@
                          <td class="mid_clip_control">
                             <div id="time_update_text" title="Current Time">0</div>
                             <br>
-                            <button type="button" class="skip_buttons" id="" title="Play"><img src="assets/skip-back.svg" alt=""></button>
+                            <button type="button" class="skip_buttons" id="time_back_5" title="Back 5 Mins"><img id="img_time_back_5" src="assets/rewind.svg" alt=""></button>
+                            <button type="button" class="skip_buttons" id="time_back_1" title="Back 1 Min"><img id="img_time_back_1" src="assets/skip-back.svg" alt=""></button>
                             <button type="button" class="play_pause_buttons" id="clip_play_btn" title="Play"><img src="assets/play.svg" alt=""></button>
                             <button type="button"  class="play_pause_buttons" id="clip_pause_btn" title="Pause"><img src="assets/pause.svg" alt=""></button>
-                            <button type="button" class="skip_buttons" id="" title="Play"><img src="assets/skip-forward.svg" alt=""></button>
+                            <button type="button" class="skip_buttons" id="time_ahead_1" title="Ahead 1 Min"><img id="img_time_ahead_1" src="assets/skip-forward.svg" alt=""></button>
+                            <button type="button" class="skip_buttons" id="time_ahead_5" title="Ahead 5 Mins"><img id="img_time_ahead_5" src="assets/fast-forward.svg" alt=""></button>
                             <br>
                             <button type="button" id="play_whole_clip_btn">Play Clip</button>
                          </td>
