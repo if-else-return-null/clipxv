@@ -16,6 +16,7 @@ function parseProjectList () {
 
 
     BYID("project_selector").innerHTML = str
+    cancelDeleteProject()
 }
 
 function createNewProject(){
@@ -48,19 +49,45 @@ function renameProject() {
 }
 
 function deleteProject() {
+    BYID("project_delete_btn").style.display = "none"
     BYID("project_confirm_delete_area").style.display = "inline-block"
 }
 
 function cancelDeleteProject() {
+    BYID("project_delete_btn").style.display = "inline-block"
     BYID("project_confirm_delete_area").style.display = "none"
 }
 
 function confirmDeleteProject() {
     console.log("deleting current project");
     BYID("project_confirm_delete_area").style.display = "none"
+    BYID("project_delete_btn").style.display = "inline-block"
     localStorage.removeItem(META.projects.prid)
     delete META.projects.items[META.projects.prid]
-    createNewProject()
+    //*** pick an existing project to load if none exist create a new one
+    let createnew = "yes"
+    for (let proj in META.projects.items){
+        if ( createnew === "yes" ) {
+            createnew = proj
+        }
+    }
+    if (createnew === "yes") {
+        createNewProject()
+    } else {
+        changeActiveProject(createnew)
+    }
+
+}
+
+function changeActiveProject(prid) {
+    META.projects.prid = prid
+    saveMeta("projects")
+    MP = JSON.parse(localStorage.getItem(META.projects.prid))
+    parseClipList()
+    parseProjectList()
+    markClipClear()
+    folderChooserUrl(MP.folder)
+    clearVplayer()
 }
 
 function parseFolderView(){

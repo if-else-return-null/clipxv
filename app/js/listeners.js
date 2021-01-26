@@ -61,18 +61,13 @@ BYID("video_list").addEventListener('click', (event) => {
 
   //loadPrevClip(event.target.id)
 });
+
 BYID("project_selector").addEventListener('change', (event) => {
   console.log('selected project is ', BYID(event.target.id).value);
+  changeActiveProject(BYID(event.target.id).value)
 
-  META.projects.prid = BYID(event.target.id).value
-  saveMeta("projects")
-  MP = JSON.parse(localStorage.getItem(META.projects.prid))
-  parseClipList()
-  parseProjectList()
-  markClipClear()
-  folderChooserUrl(MP.folder)
-  clearVplayer()
 });
+
 
 
 BYID("archive_clip_list").addEventListener('click', (event) => {
@@ -80,7 +75,7 @@ BYID("archive_clip_list").addEventListener('click', (event) => {
   let id = event.target.id.replace("arcimg_","").replace("arc_","")
   if (id === "archive_clip_list") { return; }
   console.log('selected archived video clip ', id);
-  let thisclip = META.items[STATE.video_filename].clips[id]
+  let thisclip = META.files[STATE.video_filename].clips[id]
   markClipClear()
   BYID("mark_clip_start_input").value = parseFloat(thisclip.start)
   BYID("mark_clip_end_input").value = parseFloat(thisclip.end)

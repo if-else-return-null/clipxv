@@ -40,18 +40,23 @@ body { background:blue; overflow: hidden;}
 
 .far_right_clip_control { text-align: right;}
 .far_right_clip_control button { width: 104px; height: 50px; background: none; color: white; margin:2px;}
-
-
-#sub_controls_2 { width: 30%; display: inline-block;text-align: center;}
-
-#sub_controls_4 { width: 45%;  height:140px;  display: inline-block; text-align: center;}
-
 #clip_confirm_delete_area {display: none;}
 
-#archive_clip_list_cont {
-    width:45%;  height:140px;  overflow: hidden; display: inline-block; text-align: center;
+/*#sub_controls_2 { width: 30%; display: inline-block;text-align: center;}*/
+
+
+#sub_controls_4 { width: calc(100% - 20px); text-align: center;}
+#sub_controls_4 table { width: 100%; height: 200px; }
+#sub_controls_4 table td {
+    width:50%;  vertical-align: top; text-align: center; /*border: 1px solid black;*/
 }
-#archive_clip_list { width:auto; height:140px; overflow: auto;}
+
+
+
+#archive_clip_list_cont {
+    width:100%;  display: inline-block; text-align: center; overflow:hidden;
+}
+#archive_clip_list { width:auto; height:250px; overflow: auto;}
 
 .arc_clipcard {width: 150px; height:auto; margin-left: 10px; display: inline-block;}
 .arc_clipcard img {width: 75%; height:auto;}
