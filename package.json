@@ -1,7 +1,7 @@
 {
   "name": "clipxv",
   "version": "1.0.0",
-  "description": "Video clip cutter",
+  "description": "Video clip cutter and organizer for  mp4, ogg and webm",
   "main": "main.js",
   "scripts": {
     "start": "electron ."

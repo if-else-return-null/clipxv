@@ -31,7 +31,7 @@ function seekClipEnd(){
 }
 
 function seekClipTime(e) {
-    if (STATE.cur_clip_id === null) {
+    if (STATE.video_path === null) {
         return
     }
     //console.log("seeked by time ",e);

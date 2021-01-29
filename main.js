@@ -64,6 +64,13 @@ setTimeout(function (){
     //mainWindow.webContents.send("from_mainProcess",{type:"greet", msg:"hello", files:FILELIST[user_home]})
 },5000)
 
+
+// ffmpeg -i video.mp4 -ss 00:01:00 -to 00:02:00 -c copy cut.mp4
+
+
+
+
+
 //*** debug path for win32
 
 let FILELIST = {}
