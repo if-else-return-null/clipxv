@@ -24,6 +24,7 @@ function createNewProject(){
     MP = {
         id:META.projects.prid,
         name:"untitled",
+        clip_index:0,
         folder:STATE.file_chooser_path,
         clips:{} ,
         clip_order:[]
@@ -135,6 +136,7 @@ function folderChooserUrl(url) {
 
 function clearVplayer() {
     BYID("vplayer").src = ""
+    BYID("loaded_video_text").textContent = "Empty"
     STATE.video_filename = null
     STATE.video_path = null
     time_update_text.textContent = vplayer.currentTime
@@ -156,6 +158,7 @@ function loadVideoFile(fn , id = null ) {
         return
     }
     BYID("vplayer").src = path
+    BYID("loaded_video_text").textContent = name
     STATE.video_filename = name
     STATE.video_path = path
     if (!META.files[STATE.video_filename]) {

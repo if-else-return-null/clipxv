@@ -68,12 +68,14 @@ function markClipClear(){
     vplayerPause()
     BYID("mark_clip_start_input").value = ""
     BYID("mark_clip_end_input").value = ""
+    BYID("selected_clip_text").textContent = "clip_" + MP.clip_index
     cancelDeleteClip()
     STATE.cur_clip_id = null
     STATE.playing_whole_clip = false
     MP.clip_order.forEach((item, i) => {
         BYID(item).style.outline = "none"
     });
+
 
 }
 
@@ -110,12 +112,14 @@ function markClipSave(){
         STATE.cur_clip_id = id
         //clip_order.push(id)
         MP.clip_order.push(id)
+        MP.clip_index +=1
     }
     //let data = {}
     if (!MP.clips[id]) {
         MP.clips[id] = {}
     }
     MP.clips[id].id = id
+    MP.clips[id].name = BYID("selected_clip_text").textContent
     MP.clips[id].video_path = STATE.video_path
     MP.clips[id].video_filename = STATE.video_filename
     MP.clips[id].start = start.toFixed(3)
@@ -164,7 +168,7 @@ function parseClipList(){
         str += `<img id ="img_${item}" src="${data.thumb}" />`
         str += `Start: &nbsp;${data.start} <br>`
         str += `End: &nbsp;&nbsp;&nbsp;${data.end} <br>`
-        str += `Length: ${data.runtime} <br>`
+        str += `${data.name} length: ${data.runtime} <br>`
         str += `</div>`
     });
     BYID("clip_list").innerHTML = str
@@ -186,6 +190,7 @@ function loadPrevClip(id) {
     STATE.playing_whole_clip = false
     BYID("mark_clip_start_input").value = parseFloat(thisclip.start)
     BYID("mark_clip_end_input").value = parseFloat(thisclip.end)
+    BYID("selected_clip_text").textContent = MP.clips[id].name
     // set the vplayer src
     loadVideoFile(thisclip.video_filename, id)
     //vplayer.src = thisclip.video_path

@@ -36,9 +36,16 @@
          <video id="vplayer" src=""  poster="assets/poster.png" controls></video>
 
          <div id="clip_controls">
-
+             <table id="status_displays">
+                 <tr>
+                     <td id="selected_clip_text_td"><span class="inverse_text">Clip</span> <span contenteditable id="selected_clip_text">clip_0</span></td>
+                     <td id="status_notify_text_td"><span id="status_notify_text">Started second ago.</span></td>
+                     <td id="loaded_video_text_td"><span id="loaded_video_text">Empty</span><span class="inverse_text">File</span> </td>
+                 </tr>
+             </table>
              <div id="sub_controls_1" class="sub_control">
              <center>
+
                  <table>
                      <tr>
                          <td class="far_left_clip_control">
