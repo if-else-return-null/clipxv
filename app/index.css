@@ -1,6 +1,8 @@
 
 body { background:blue; overflow: hidden;}
 
+input[type="number"] { width: 100px;}
+
 #mid_area {
     position: absolute; top: 0%; left: 20%; width: 60%; height:100%; background: rgba(0, 0, 0, 0.5);
 
@@ -42,6 +44,9 @@ body { background:blue; overflow: hidden;}
 .play_pause_buttons { width: 50px; height: 50px;}
 .skip_buttons { padding: 1px; width: 25px; height: 25px;}
 .skip_buttons img {width: 100%;}
+.skip_buttons_small { padding: 1px; width: 15px; height: 15px;}
+.skip_buttons_small img {width: 100%;}
+
 #play_whole_clip_btn { margin-top:10px; width:100px; height:25px; color: white;}
 
 .right_clip_control { text-align: left;}
@@ -54,22 +59,23 @@ body { background:blue; overflow: hidden;}
 
 /*#sub_controls_2 { width: 30%; display: inline-block;text-align: center;}*/
 
+#sub_controls_2 { width: calc(100% - 20px); text-align: center;}
+#sub_controls_2 table { width: 100%;  }
+#sub_controls_2 table td {
+    width:24%;  vertical-align: top; text-align: left; /*border: 1px solid black;*/
+}
+
+
+
 
 #sub_controls_4 { width: calc(100% - 20px); text-align: center;}
 #sub_controls_4 table { width: 100%; height: 200px; }
 #sub_controls_4 table td {
-    width:50%;  vertical-align: top; text-align: center; /*border: 1px solid black;*/
+    width:32%;  vertical-align: top; text-align: center; /*border: 1px solid black;*/
 }
 
 
 
-#archive_clip_list_cont {
-    width:100%;  display: inline-block; text-align: center; overflow:hidden;
-}
-#archive_clip_list { width:auto; height:250px; overflow: auto;}
-
-.arc_clipcard {width: 150px; height:auto; margin-left: 10px; display: inline-block;}
-.arc_clipcard img {width: 75%; height:auto;}
 
 #project_confirm_delete_area {display: none;}
 
@@ -80,9 +86,9 @@ body { background:blue; overflow: hidden;}
 }
 
 
-#first_load_info  { display: none;}
+#video_list_controls  { width: 100%; height:65px;}
 
-#video_list {width: 100%; height:80%; overflow: auto; text-align: left;}
+#video_list {width: 100%; height:calc(70% - 70px); overflow: auto; text-align: left;}
 #video_list img { height: 20px; margin-left: 5px; margin-right: 5px;}
 .video_list_path { width: 100%; text-align: center; font-size: 12px;}
 .video_list_folder { font-size: 15px; font-weight: bold; line-height: 15px;}
@@ -90,11 +96,28 @@ body { background:blue; overflow: hidden;}
 .video_list_folder:hover {background:rgba(0, 0, 0, 0.99); }
 .video_list_item:hover {background:rgba(0, 0, 0, 0.99); }
 
-#clip_list {
+
+#archive_clip_list_cont {
+    width:100%;  height:30%; display: inline-block; text-align: center; overflow:hidden;
+}
+#archive_clip_list { width:auto; height:250px; overflow: auto;}
+
+.arc_clipcard {width: 150px; height:auto; margin-left: 10px; display: inline-block;}
+.arc_clipcard img {width: 75%; height:auto;}
+
+
+
+
+#clip_list_cont {
     position: absolute; top: 0%; right: 0%; width: 20%; height:100%;
-    background: rgba(0, 0, 0, 0.75); color: white; overflow: auto;
+    background: rgba(0, 0, 0, 0.75); color: white;
     border-left: 2px solid white;
 }
+
+#clip_list_controls  { width: 100%; height:65px;}
+
+#clip_list {width: 100%; height:calc(100% - 70px); overflow-y: auto; overflow-x: hidden; text-align: left;}
+
 .clipcard {width: 90%; height:auto; margin-left: 5%; }
 .clipcard img {width: 100%; height:auto;}
 
@@ -102,7 +125,8 @@ body { background:blue; overflow: hidden;}
     width: 40%;
     border: 1px solid #ccc;
     display: inline-block;
-    padding: 6px 12px;
+    padding: 6px 6px;
     cursor: pointer;
+    max-width: 40%
 }
 .file_chooser_btns button { display:none;}

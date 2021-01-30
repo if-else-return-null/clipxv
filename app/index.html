@@ -11,24 +11,27 @@
  </head>
  <body>
      <div id="video_list_cont">
-         <div id="first_load_info">
-             <h2>***This app is currently under development and may not work***</h2>
-             <br>
-             <h2>Where are you video files?<br></h2>
-         </div>
-         <label class="file_chooser_btns" title="Home Folder">
+         <div id="video_list_controls">
+             <label class="file_chooser_btns" title="Home Folder">
 
-             <button type="button" id="file_choose_video_home"></button>
-             <!--<input type="file" id="file_choose_video" webkitdirectory directory value="">-->
-            <img src="assets/folder_home.png" alt="">
-        </label>
-        <label class="file_chooser_btns" title="Parent Folder">
-            <button type="button" id="file_choose_video_parent"></button>
-            <!--<input type="file" id="file_choose_video" webkitdirectory directory value="">-->
-            <img src="assets/folder_parent.png" alt="">
-       </label>
-         <hr>
+                 <button type="button" id="file_choose_video_home"></button>
+                 <!--<input type="file" id="file_choose_video" webkitdirectory directory value="">-->
+                <img src="assets/folder_home.png" alt="">
+            </label>
+            <label class="file_chooser_btns" title="Parent Folder">
+                <button type="button" id="file_choose_video_parent"></button>
+                <!--<input type="file" id="file_choose_video" webkitdirectory directory value="">-->
+                <img src="assets/folder_parent.png" alt="">
+           </label>
+             <hr>
+         </div>
+
          <div id="video_list">
+
+         </div>
+         <div id="archive_clip_list_cont">
+             Archived Clips<hr>
+             <div id="archive_clip_list"></div>
 
          </div>
      </div>
@@ -61,7 +64,11 @@
                               <button type="button" id="seek_clip_start_btn">Seek</button>
                          </td>
                          <td class="mid_clip_control">
+                             <button type="button" class="skip_buttons_small" id="time_back_1.0" title="Back 1 Second"><img id="img_time_back_1.0" src="assets/rewind.svg" alt=""></button>
+                             <button type="button" class="skip_buttons_small" id="time_back_0.1" title="Back 1/10 Second"><img id="img_time_back_0.1" src="assets/skip-back.svg" alt=""></button>
                             <div id="time_update_text" title="Current Time">0</div>
+                            <button type="button" class="skip_buttons_small" id="time_ahead_0.1" title="Ahead 1/10 Second"><img id="img_time_ahead_0.1" src="assets/skip-forward.svg" alt=""></button>
+                            <button type="button" class="skip_buttons_small" id="time_ahead_1.0" title="Ahead 1 Second"><img id="img_time_ahead_1.0" src="assets/fast-forward.svg" alt=""></button>
                             <br>
                             <button type="button" class="skip_buttons" id="time_back_5" title="Back 5 Mins"><img id="img_time_back_5" src="assets/rewind.svg" alt=""></button>
                             <button type="button" class="skip_buttons" id="time_back_1" title="Back 1 Min"><img id="img_time_back_1" src="assets/skip-back.svg" alt=""></button>
@@ -99,8 +106,33 @@
                 </table>
             </center>
             </div>
+            <div id="sub_controls_2" class="sub_control">
+                <center>
+                    <table>
+                        <tr>
+                            <td>
+                                Render &nbsp;&nbsp;&nbsp;<input type="checkbox" id="clip_render_checkbox" checked >
+
+                            </td>
+                            <td>
+                                Transition <sup>(begin)</sup> &nbsp;&nbsp;&nbsp; <select id="clip_start_transition" value=""></select><br>
+                                Duration &nbsp;&nbsp;&nbsp;<input type="number"  step="1" id="clip_start_transition_duration" value="0">
+                            </td>
+                            <td>
+                                Transition <sup>(end)</sup> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select id="clip_end_transition" value=""></select><br>
+                                Duration &nbsp;&nbsp;&nbsp;<input type="number"  step="1" id="clip_end_transition_duration" value="0">
+                            </td>
+                            <td>
+                                Position &nbsp;&nbsp;&nbsp;<button type="button" id="clip_position_up">Up</button>
+                                 &nbsp;&nbsp;&nbsp;<button type="button" id="clip_position_down">Down</button>
+
+                            </td>
+                        </tr>
+                    </table>
+               </center>
+            </div>
              <!--
-             <div id="sub_controls_2" class="sub_control"></div>
+
              <hr>
              <div  id="sub_controls_3" class="sub_control">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
             -->
@@ -111,23 +143,21 @@
                      <table>
                          <tr>
                              <td>
-                                 Project Info <hr>
-                                 Change Project: &nbsp;&nbsp;&nbsp;<select id="project_selector" name=""></select>
-                                 <button type="button" id="project_new_btn">New</button><br><br>
+                                 Project: &nbsp;&nbsp;&nbsp;<select id="project_selector" name=""></select>
+                                 &nbsp;&nbsp;&nbsp;<button type="button" id="project_new_btn">New</button><br><br>
+
+
+                             </td>
+                             <td>
                                  <input type="text" id="project_rename_input" value="">
-                                 <button type="button" id="project_rename_btn">Rename</button><br><br>
+                                 &nbsp;&nbsp;&nbsp;<button type="button" id="project_rename_btn">Rename</button>
+                             </td>
+                             <td>
                                  <button type="button" id="project_delete_btn">Delete</button>
                                  <span id="project_confirm_delete_area">
                                      <button type="button" id="project_confirm_delete_btn">Confirm Delete</button>
                                      <button type="button" id="project_cancel_delete_btn">Cancel</button>
                                  </span>
-                             </td>
-                             <td>
-                                 <div id="archive_clip_list_cont">
-                                     Archived Clips<hr>
-                                     <div id="archive_clip_list"></div>
-
-                                 </div>
                              </td>
                          </tr>
                      </table>
@@ -140,10 +170,15 @@
      </div>
 
 
+     <div id="clip_list_cont">
+         <div id="clip_list_controls">
 
-    <div id="clip_list">
+         </div>
+         <div id="clip_list">
 
-    </div>
+         </div>
+     </div>
+
 
     <!-- You can also require other files to run in this process -->
     <script src="js/utility.js"></script>

@@ -32,6 +32,13 @@ BYID("time_ahead_1").addEventListener('click', seekClipTime)
 BYID("time_ahead_5").addEventListener('click', seekClipTime)
 BYID("time_back_1").addEventListener('click', seekClipTime)
 BYID("time_back_5").addEventListener('click', seekClipTime)
+BYID("time_ahead_0.1").addEventListener('click', seekClipTime)
+BYID("time_ahead_1.0").addEventListener('click', seekClipTime)
+BYID("time_back_1.0").addEventListener('click', seekClipTime)
+BYID("time_back_0.1").addEventListener('click', seekClipTime)
+
+BYID("clip_position_up").addEventListener('click', moveClipUp)
+BYID("clip_position_down").addEventListener('click', moveClipDown)
 
 BYID("mark_clip_start_btn").addEventListener('click', markClipStart)
 BYID("mark_clip_end_btn").addEventListener('click', markClipEnd)
@@ -85,7 +92,9 @@ BYID("archive_clip_list").addEventListener('click', (event) => {
 
 // start up calls
 
+// setup Transition selectors
 
+parseTransitionSelectors()
 
 // if there is no current project create one
 if (META.projects.prid === null) {
