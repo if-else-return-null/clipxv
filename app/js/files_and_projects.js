@@ -91,6 +91,19 @@ function changeActiveProject(prid) {
     clearVplayer()
 }
 
+let job_list = {}
+function projectCreateVideo() {
+    console.log("projectCreateVideo");
+    let jid = generateUUIDv4()
+    let out_ops = {
+        h:1080,
+        w:1920,
+        container:"mp4"
+    }
+    capi.ipcSend("from_mainWindow",{ type:"request_video_creation", jid:jid, mp:MP, options:out_ops })
+}
+
+
 function parseFolderView(){
     /*
     if (STATE.first_load_info_visible === true) {

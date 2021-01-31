@@ -51,6 +51,8 @@ BYID("project_delete_btn").addEventListener('click', deleteProject)
 BYID("project_confirm_delete_btn").addEventListener('click', confirmDeleteProject)
 BYID("project_cancel_delete_btn").addEventListener('click', cancelDeleteProject)
 
+BYID("project_create_video_btn").addEventListener('click', projectCreateVideo)
+
 BYID("video_list").addEventListener('click', (event) => {
   console.log('selected video file ', event.target.id);
   let fn = event.target.id

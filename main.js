@@ -2,12 +2,18 @@
 const {app, BrowserWindow, ipcMain} = require('electron')
 const path = require('path')
 const fs = require('fs')
-
+const { fork , spawn  } = require('child_process');
+const os = require('os')
 
 let mainWindow = null
+let os_platform = os.platform()
+let tdir = os.tmpdir()
 let user_home = app.getPath("home")
 console.log("user_home", user_home);
+console.log("os_platform", os_platform);
+console.log("tdir", tdir);
 
+let cloneObj = function(obj){ return JSON.parse(JSON.stringify(obj))}
 
 function createWindow () {
   // Create the browser window.
@@ -57,6 +63,7 @@ app.on('window-all-closed', function () {
 ipcMain.on('from_mainWindow', (event, data) => {
     console.log("from_mainWindow", data)
     if (data.type === "request_file_list"){ runFiles(data.url)  }
+    if (data.type === "request_video_creation"){ VOUT.addProjectToCue(data)  }
 
 })
 
@@ -65,10 +72,143 @@ setTimeout(function (){
 },5000)
 
 
+
 // ffmpeg -i video.mp4 -ss 00:01:00 -to 00:02:00 -c copy cut.mp4
+//ffprobe -v quiet -print_format json -show_format -show_streams 2021-01-09_08-49-26.mp4
+//*** determine commands for this system
+let cmd = {ffprobe:"ffprobe", ffplay:"ffplay", ffmpeg:"ffmpeg"}
+cmd_options = {
+    cut_clip:["-i", "inputVideo", "-ss", "startTime", "-to", "endTime", "-c", "copy", "outputFile"]
+}
+/*
+if (os_platform === "win32") {
+
+} else {
+
+}
+*/
 
 
 
+
+
+let VOUT = {}
+VOUT.isWorking = false
+VOUT.project_cue = []
+VOUT.job = null
+
+VOUT.addProjectToCue = function (data) {
+    VOUT.project_cue.push(data)
+    console.log("VOUT: Adding new project to cue.");
+    if ( VOUT.isWorking === true ) {
+        return
+    } else {
+        VOUT.parseCueItem()
+    }
+
+
+}
+
+VOUT.parseCueItem = function() {
+    if ( VOUT.project_cue.length === 0 ) {
+        console.log("VOUT: Nothing to parse.");
+        VOUT.isWorking = false
+        return
+    }
+    VOUT.isWorking = true
+    console.log("VOUT: Parsing Cue Item");
+    VOUT.job = VOUT.project_cue.shift()
+    VOUT.job.vpaths = {}
+    VOUT.job.vorder = []
+    VOUT.cutid = 0
+    // determine which clips to render
+    VOUT.job.mp.clip_order.forEach((item, i) => {
+        if (VOUT.job.mp.clips[item].render === true) {
+            VOUT.job.vorder.push(item)
+            let vpath = VOUT.job.mp.clips[item].video_path
+            VOUT.job.vpaths[vpath] = vpath
+        }
+    });
+    console.log(VOUT.job.vorder,VOUT.job.vpaths );
+    // check that needed video paths exist
+    let pathsOk = true
+    for (let path in VOUT.job.vpaths) {
+        if (!fs.existsSync(path)) {
+            pathsOk = false
+        }
+    }
+    if (pathsOk = false) {
+        console.log("VOUT:ERROR:  Some Video files do not exist");
+        //*** maybe have to clean up VOUT object and check for more jobs
+        return
+    }
+    // all videos exist so lets cut the clips
+    VOUT.job.dir = tdir + "/" + VOUT.job.jid
+    console.log("VOUT:job.dir: ", VOUT.job.dir);
+    fs.mkdirSync(VOUT.job.dir)
+    VOUT.cutClips()
+
+
+
+
+}
+//["-i", "inputVideo", "-ss", "startTime", "-to", "endTime", "-c", "copy" "outputFile"]
+VOUT.cutClips = function() {
+    if (VOUT.cutid === VOUT.job.vorder.length){
+        console.log("VOUT: All done cutting clips");
+        // call the next step
+
+        return;
+    }
+    let clipid = VOUT.job.vorder[VOUT.cutid]
+    let clip = VOUT.job.mp.clips[clipid]
+    let  ext = clip.video_path.split(".").pop()
+    let options = cloneObj(cmd_options.cut_clip)
+    options[1] = clip.video_path
+    options[3] = clip.start
+    options[5] =  clip.end
+    options[8] = VOUT.job.dir +"/"+ clipid +"."+ ext
+    console.log(options);
+    let cutspawn = spawn(cmd.ffmpeg, options)
+    cutspawn.stdout.on('data', (data) => {
+        console.log("stdout",data.toString());
+    });
+
+    cutspawn.stderr.on('data', (data) => {
+        console.log("stderr",data.toString());
+    });
+
+    cutspawn.on('exit', (code) => {
+      console.log(`cutspawn exited with code ${code}`);
+      VOUT.cutid += 1
+      VOUT.cutClips()
+    });
+
+    
+}
+
+/*
+let vidpath = "/home/returnnull/vidsplit/2021-01-09_08-49-26.mp4"
+
+let testproc = spawn(cmd.ffprobe, [ "-v", "quiet", "-print_format", "json", "-show_format", "-show_streams", vidpath  ])
+//let testproc = spawn(cmd.ffprobe,["-v", "quiet", "-print_format" json", vidpath])
+
+testproc.stdout.on('data', (data) => {
+    //console.log("stdout",data.toString());
+    console.log(JSON.parse(data));
+});
+
+testproc.stderr.on('data', (data) => {
+    console.log("stdout",data.toString());
+});
+
+testproc.on('exit', (code) => {
+  console.log(`testproc exited with code ${code}`);
+
+});
+//testproc.stdin.setEncoding = 'utf-8';
+
+*/
 
 
 //*** debug path for win32
