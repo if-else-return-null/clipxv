@@ -7,11 +7,17 @@ const os = require('os')
 
 let mainWindow = null
 let os_platform = os.platform()
-let tdir = os.tmpdir()
+let sys_temp_dir = os.tmpdir()
 let user_home = app.getPath("home")
+let app_data_path = app.getPath("userData")
+let user_videos = app.getPath("videos")
+let app_video_out = user_videos + "/clipxv"
+
 console.log("user_home", user_home);
 console.log("os_platform", os_platform);
-console.log("tdir", tdir);
+console.log("sys_temp_dir", sys_temp_dir);
+console.log("app_data_path", app_data_path);
+console.log("user_videos", user_videos);
 
 let cloneObj = function(obj){ return JSON.parse(JSON.stringify(obj))}
 
@@ -74,11 +80,13 @@ setTimeout(function (){
 
 
 // ffmpeg -i video.mp4 -ss 00:01:00 -to 00:02:00 -c copy cut.mp4
+//ffmpeg -f concat -safe 0 -i mylist.txt -c copy output.wav
 //ffprobe -v quiet -print_format json -show_format -show_streams 2021-01-09_08-49-26.mp4
 //*** determine commands for this system
 let cmd = {ffprobe:"ffprobe", ffplay:"ffplay", ffmpeg:"ffmpeg"}
 cmd_options = {
-    cut_clip:["-i", "inputVideo", "-ss", "startTime", "-to", "endTime", "-c", "copy", "outputFile"]
+    cut_clip:["-i", "inputVideo", "-ss", "startTime", "-to", "endTime", "-c", "copy", "outputFile"],
+    concat_clips:["-f", "concat", "-safe", "0", "-i", "cliplist", "-c", "copy", "outputFile"]
 }
 /*
 if (os_platform === "win32") {
@@ -143,9 +151,10 @@ VOUT.parseCueItem = function() {
         return
     }
     // all videos exist so lets cut the clips
-    VOUT.job.dir = tdir + "/" + VOUT.job.jid
+    VOUT.job.dir = app_video_out + "/" + getDateNow() +"_"+ getTimeNow() +"("+ VOUT.job.mp.name.trim() +")"
+
     console.log("VOUT:job.dir: ", VOUT.job.dir);
-    fs.mkdirSync(VOUT.job.dir)
+    fs.mkdirSync(VOUT.job.dir + "/clips", {recursive:true})
     VOUT.cutClips()
 
 
@@ -157,17 +166,19 @@ VOUT.cutClips = function() {
     if (VOUT.cutid === VOUT.job.vorder.length){
         console.log("VOUT: All done cutting clips");
         // call the next step
-
+        VOUT.compareVideoFormats()
         return;
     }
     let clipid = VOUT.job.vorder[VOUT.cutid]
     let clip = VOUT.job.mp.clips[clipid]
     let  ext = clip.video_path.split(".").pop()
+    clip.clip_filename = clipid +"."+ ext
+    clip.clip_path = VOUT.job.dir + "/clips/" + clip.clip_filename
     let options = cloneObj(cmd_options.cut_clip)
     options[1] = clip.video_path
     options[3] = clip.start
     options[5] =  clip.end
-    options[8] = VOUT.job.dir +"/"+ clipid +"."+ ext
+    options[8] = clip.clip_path
     console.log(options);
     let cutspawn = spawn(cmd.ffmpeg, options)
     cutspawn.stdout.on('data', (data) => {
@@ -184,7 +195,51 @@ VOUT.cutClips = function() {
       VOUT.cutClips()
     });
 
-    
+
+}
+
+VOUT.compareVideoFormats = function () {
+
+    // done comparing video formats
+    VOUT.buildTransisions()
+}
+
+VOUT.buildTransisions = function () {
+
+    // done building transitions
+    VOUT.buildFinalVideo()
+}
+
+VOUT.buildFinalVideo = function () {
+    let str = ""
+    VOUT.job.vorder.forEach((item, i) => { //*** check this on windows
+        str += `file ${VOUT.job.mp.clips[item].clip_path.replace(/ /g, "\\ ")}\n`
+    });
+    console.log(str);
+    fs.writeFileSync(VOUT.job.dir + "/cliplist.txt" , str)
+    //concat_clips:["-f", "concat", "-safe", "0", "-i", "cliplist", "-c", "copy", "outputFile"]
+    let options = cloneObj(cmd_options.concat_clips)
+    options[5] = VOUT.job.dir + "/cliplist.txt"
+    options[8] = VOUT.job.dir + "/final_render." + VOUT.job.options.container
+    console.log(options);
+    let concatspawn = spawn(cmd.ffmpeg, options)
+    concatspawn.stdout.on('data', (data) => {
+        console.log("stdout",data.toString());
+    });
+
+    concatspawn.stderr.on('data', (data) => {
+        console.log("stderr",data.toString());
+    });
+
+    concatspawn.on('exit', (code) => {
+      console.log(`concatspawn exited with code ${code}`);
+      // this job is done check for any more in the cue
+      VOUT.parseCueItem()
+    });
+
+
+
+
 }
 
 /*
@@ -493,4 +548,20 @@ function runFiles(thisurl) {
         }
         //if ( filelist.length === 0  ) { showFileList() } // empty folders
 
+}
+
+// returns a string such as "2020-10-13" for the given seconds since epoch or the current day if secs is undefined
+function getDateNow(secs) {
+    let d
+    if (secs === undefined) { d = new Date() } else { d = new Date(secs) }
+    let datenow  = [  d.getFullYear(),  ('0' + (d.getMonth() + 1)).slice(-2),  ('0' + d.getDate()).slice(-2)].join('-');
+    return datenow
+}
+
+// returns a string such as "14:25" for the given seconds since epoch or the current time if secs is undefined
+function getTimeNow(secs) {
+    let d
+    if (secs === undefined) { d = new Date() } else { d = new Date(secs) }
+    let datenow  = [    ('0' + d.getHours() ).slice(-2),  ('0' + d.getMinutes()).slice(-2),  ('0' + d.getSeconds()).slice(-2) ].join('_');
+    return datenow
 }
