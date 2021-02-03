@@ -86,7 +86,8 @@ setTimeout(function (){
 let cmd = {ffprobe:"ffprobe", ffplay:"ffplay", ffmpeg:"ffmpeg"}
 cmd_options = {
     cut_clip:["-i", "inputVideo", "-ss", "startTime", "-to", "endTime", "-c", "copy", "outputFile"],
-    concat_clips:["-f", "concat", "-safe", "0", "-i", "cliplist", "-c", "copy", "outputFile"]
+    concat_clips:["-f", "concat", "-safe", "0", "-i", "cliplist", "-c", "copy", "outputFile"],
+    ffprobe_1:["-v", "quiet", "-print_format", "json", "-show_format", "-show_streams", "inputFile"]
 }
 /*
 if (os_platform === "win32") {
@@ -155,12 +156,47 @@ VOUT.parseCueItem = function() {
 
     console.log("VOUT:job.dir: ", VOUT.job.dir);
     fs.mkdirSync(VOUT.job.dir + "/clips", {recursive:true})
-    VOUT.cutClips()
 
+    VOUT.compareSourceFormats()
 
 
 
 }
+VOUT.comp_cout_1 = []
+
+VOUT.compareSourceFormats = function () {
+    if (VOUT.comp_cout_1.length === 0) {
+        for ( let path in VOUT.job.vpaths){
+            VOUT.comp_cout_1.push(path)
+        }
+    }
+
+    let options = cloneObj(cmd_options.ffprobe_1)
+    options[6] = VOUT.comp_cout_1.pop()
+    //console.log(options);
+    VOUT.job.vpaths[options[6]] = ""
+    let probespawn = spawn(cmd.ffprobe, options)
+    probespawn.stdout.on('data', (data) => { VOUT.job.vpaths[options[6]] += data });
+    probespawn.stderr.on('data', (data) => { console.log("stderr",data.toString());});
+    probespawn.on('exit', (code) => {
+      console.log(`probespawn exited with code ${code}`);
+      // this job is done check for any more in the cue
+      VOUT.job.vpaths[options[6]] = JSON.parse(VOUT.job.vpaths[options[6]])
+      if (VOUT.comp_cout_1.length === 0) {
+          console.log("all done compareSourceFormats");
+          console.log(VOUT.job.vpaths);
+          VOUT.cutClips()
+      } else {
+          VOUT.compareSourceFormats()
+      }
+
+    });
+
+
+}
+
+
+
 //["-i", "inputVideo", "-ss", "startTime", "-to", "endTime", "-c", "copy" "outputFile"]
 VOUT.cutClips = function() {
     if (VOUT.cutid === VOUT.job.vorder.length){
@@ -179,6 +215,9 @@ VOUT.cutClips = function() {
     options[3] = clip.start
     options[5] =  clip.end
     options[8] = clip.clip_path
+    if (clip.force_encode === true) {
+        options.splice(6,2)
+    }
     console.log(options);
     let cutspawn = spawn(cmd.ffmpeg, options)
     cutspawn.stdout.on('data', (data) => {
@@ -198,13 +237,16 @@ VOUT.cutClips = function() {
 
 }
 
+//*** this will probobly be incorperated into cutClips()
 VOUT.compareVideoFormats = function () {
+    // scale and pad if needed
+    // compare codex
 
     // done comparing video formats
-    VOUT.buildTransisions()
+    VOUT.buildTransitions()
 }
 
-VOUT.buildTransisions = function () {
+VOUT.buildTransitions = function () {
 
     // done building transitions
     VOUT.buildFinalVideo()
@@ -214,6 +256,7 @@ VOUT.buildFinalVideo = function () {
     let str = ""
     VOUT.job.vorder.forEach((item, i) => { //*** check this on windows
         str += `file ${VOUT.job.mp.clips[item].clip_path.replace(/ /g, "\\ ")}\n`
+        //str += `file "${VOUT.job.mp.clips[item].clip_path}"\n`
     });
     console.log(str);
     fs.writeFileSync(VOUT.job.dir + "/cliplist.txt" , str)

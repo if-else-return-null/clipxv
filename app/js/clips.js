@@ -110,6 +110,7 @@ function markClipClear(){
     cancelDeleteClip()
     //console.log("checked", BYID("clip_render_checkbox").checked);
     BYID("clip_render_checkbox").checked = true
+    BYID("clip_force_encode_checkbox").checked = false
     BYID("clip_start_transition").value = "none"
     BYID("clip_start_transition_duration").value = 0
     BYID("clip_end_transition").value = "none"
@@ -170,6 +171,7 @@ function markClipSave(){
     MP.clips[id].end = end.toFixed(3)
     MP.clips[id].runtime = parseFloat(end - start).toFixed(3)
     MP.clips[id].render = BYID("clip_render_checkbox").checked
+    MP.clips[id].force_encode = BYID("clip_force_encode_checkbox").checked
     MP.clips[id].startTransition = BYID("clip_start_transition").value
     MP.clips[id].startTransitionDuration = BYID("clip_start_transition_duration").value
     MP.clips[id].endTransition = BYID("clip_end_transition").value
@@ -245,6 +247,7 @@ function loadPrevClip(id) {
     BYID("mark_clip_end_input").value = parseFloat(thisclip.end)
     BYID("selected_clip_text").textContent = thisclip.name
     BYID("clip_render_checkbox").checked = thisclip.render
+    BYID("clip_force_encode_checkbox").checked = thisclip.force_encode
     BYID("clip_start_transition").value = thisclip.startTransition
     BYID("clip_start_transition_duration").value = thisclip.startTransitionDuration
     BYID("clip_end_transition").value = thisclip.endTransition
