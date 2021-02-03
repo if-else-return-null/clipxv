@@ -67,7 +67,7 @@ app.on('window-all-closed', function () {
 // code. You can also put them in separate files and require them here.
 
 ipcMain.on('from_mainWindow', (event, data) => {
-    console.log("from_mainWindow", data)
+    //console.log("from_mainWindow", data)
     if (data.type === "request_file_list"){ runFiles(data.url)  }
     if (data.type === "request_video_creation"){ VOUT.addProjectToCue(data)  }
 
@@ -162,6 +162,7 @@ VOUT.parseCueItem = function() {
 
 
 }
+
 VOUT.comp_cout_1 = []
 
 VOUT.compareSourceFormats = function () {
@@ -180,11 +181,12 @@ VOUT.compareSourceFormats = function () {
     probespawn.stderr.on('data', (data) => { console.log("stderr",data.toString());});
     probespawn.on('exit', (code) => {
       console.log(`probespawn exited with code ${code}`);
+      //console.log(VOUT.job.vpaths[options[6]]);
       // this job is done check for any more in the cue
       VOUT.job.vpaths[options[6]] = JSON.parse(VOUT.job.vpaths[options[6]])
       if (VOUT.comp_cout_1.length === 0) {
           console.log("all done compareSourceFormats");
-          console.log(VOUT.job.vpaths);
+          //console.log(VOUT.job.vpaths);
           VOUT.cutClips()
       } else {
           VOUT.compareSourceFormats()
@@ -205,17 +207,29 @@ VOUT.cutClips = function() {
         VOUT.compareVideoFormats()
         return;
     }
-    let clipid = VOUT.job.vorder[VOUT.cutid]
+    let clipid = VOUT.job.vorder[VOUT.cutid] // uuid from client
     let clip = VOUT.job.mp.clips[clipid]
-    let  ext = clip.video_path.split(".").pop()
+    let  ext = clip.video_path.split(".").pop().toLowerCase()
+    let stream = VOUT.job.vpaths[clip.video_path].streams[0]
+    console.log("STREAM",stream);
+    let force_encode = false
+    let formats = VOUT.job.vpaths[clip.video_path].format.format_name.split(",")
+    if ( !formats.includes(VOUT.job.options.container)) {
+        ext = VOUT.job.options.container
+        force_encode = true
+    }
     clip.clip_filename = clipid +"."+ ext
     clip.clip_path = VOUT.job.dir + "/clips/" + clip.clip_filename
+
     let options = cloneObj(cmd_options.cut_clip)
     options[1] = clip.video_path
     options[3] = clip.start
     options[5] =  clip.end
     options[8] = clip.clip_path
-    if (clip.force_encode === true) {
+
+    // do any modification to the ffmpeg options here
+    if (clip.force_encode === true || force_encode === true) {
+        console.log("Forced Encoding true");
         options.splice(6,2)
     }
     console.log(options);
@@ -565,10 +579,9 @@ function runFiles(thisurl) {
                 }
                 // test for video file extensions
                 if ( FILELIST[thisurl].items[x]["type"] === "file" && FILELIST[thisurl].items[x]["ext"] !== null) {
-                    console.log("testing extension");
+                    //console.log("testing extension");
                     let extl = FILELIST[thisurl].items[x]["ext"].toLowerCase()
                     if (extl === "mp4") {
-                        console.log("found mp4");
                         FILELIST[thisurl].items[x]["ftype"] = "video/mp4"
                     }
                     if (extl === "ogg") {
