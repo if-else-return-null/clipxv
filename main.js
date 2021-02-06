@@ -87,8 +87,10 @@ let cmd = {ffprobe:"ffprobe", ffplay:"ffplay", ffmpeg:"ffmpeg"}
 cmd_options = {
     cut_clip:["-i", "inputVideo", "-ss", "startTime", "-to", "endTime", "-c", "copy", "outputFile"],
     concat_clips:["-f", "concat", "-safe", "0", "-i", "cliplist", "-c", "copy", "outputFile"],
-    ffprobe_1:["-v", "quiet", "-print_format", "json", "-show_format", "-show_streams", "inputFile"]
+    ffprobe_1:["-v", "quiet", "-print_format", "json", "-show_format", "-show_streams", "inputFile"],
+    resize_opt:["-vf", `scale=WIDTH:HEIGHT:force_original_aspect_ratio=decrease,pad=WIDTH:HEIGHT:(ow-iw)/2:(oh-ih)/2,setsar=1`]
 }
+let codecs = {mp4:"libx264", webm:"libvpx-vp9", ogg:"libx264"}
 /*
 if (os_platform === "win32") {
 
@@ -204,7 +206,7 @@ VOUT.cutClips = function() {
     if (VOUT.cutid === VOUT.job.vorder.length){
         console.log("VOUT: All done cutting clips");
         // call the next step
-        VOUT.compareVideoFormats()
+        VOUT.buildTransitions()
         return;
     }
     let clipid = VOUT.job.vorder[VOUT.cutid] // uuid from client
@@ -212,15 +214,25 @@ VOUT.cutClips = function() {
     let  ext = clip.video_path.split(".").pop().toLowerCase()
     let stream = VOUT.job.vpaths[clip.video_path].streams[0]
     console.log("STREAM",stream);
+    // check video container
     let force_encode = false
     let formats = VOUT.job.vpaths[clip.video_path].format.format_name.split(",")
     if ( !formats.includes(VOUT.job.options.container)) {
         ext = VOUT.job.options.container
         force_encode = true
     }
+    // check video geometry
+    let force_resize = false
+    pwxh = VOUT.job.options.w + "x" + VOUT.job.options.h
+    vwxh = VOUT.job.vpaths[clip.video_path].streams[0].width + "x" + VOUT.job.vpaths[clip.video_path].streams[0].height
+    if (vwxh !== pwxh) {
+        force_encode = true
+        force_resize = true
+    }
+
     clip.clip_filename = clipid +"."+ ext
     clip.clip_path = VOUT.job.dir + "/clips/" + clip.clip_filename
-
+    // cut_clip:["-i", "inputVideo", "-ss", "startTime", "-to", "endTime", "-c", "copy", "outputFile"],
     let options = cloneObj(cmd_options.cut_clip)
     options[1] = clip.video_path
     options[3] = clip.start
@@ -230,8 +242,17 @@ VOUT.cutClips = function() {
     // do any modification to the ffmpeg options here
     if (clip.force_encode === true || force_encode === true) {
         console.log("Forced Encoding true");
-        options.splice(6,2)
+        //options.splice(6,2)
+        options[6] = "-c:v"
+        options[7] = codecs[ext]
     }
+    // resize_opt:["-vf", "'scale=WIDTH:HEIGHT:force_original_aspect_ratio=decrease,pad=WIDTH:HEIGHT:(ow-iw)/2:(oh-ih)/2,setsar=1'"]
+    if ( force_resize === true) {
+        let resize = cloneObj(cmd_options.resize_opt)
+        resize[1] = resize[1].replace(/WIDTH/g, VOUT.job.options.w ).replace(/HEIGHT/g, VOUT.job.options.h)
+        options.splice(6,0,resize[0],resize[1])
+    }
+
     console.log(options);
     let cutspawn = spawn(cmd.ffmpeg, options)
     cutspawn.stdout.on('data', (data) => {
@@ -251,14 +272,6 @@ VOUT.cutClips = function() {
 
 }
 
-//*** this will probobly be incorperated into cutClips()
-VOUT.compareVideoFormats = function () {
-    // scale and pad if needed
-    // compare codex
-
-    // done comparing video formats
-    VOUT.buildTransitions()
-}
 
 VOUT.buildTransitions = function () {
 

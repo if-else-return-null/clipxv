@@ -98,8 +98,8 @@ function projectCreateVideo() {
     let out_ops = {
         h:1080,
         w:1920,
-        container:"mp4",
-        codec_name:"h264"
+        container:"webm",
+        codec_name:"h264" // not used yet
     }
     capi.ipcSend("from_mainWindow",{ type:"request_video_creation", jid:jid, mp:MP, options:out_ops })
 }
