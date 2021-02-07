@@ -25,9 +25,9 @@ function vplayerPause(){
 let FILES = {}
 let META = {}
 META.files = {}
-META.projects = { prid:null,  items:{} } //e2d7767b-75f3-4b5d-b18a-6c52e18a6b47
+META.projects = { prid:null,  items:{} }
 
-let MP //= META.projects
+let MP 
 let STATE = {}
 
 STATE.cur_clip_id = null

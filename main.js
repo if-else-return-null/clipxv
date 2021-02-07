@@ -1,4 +1,3 @@
-// Modules to control application life and create native browser window
 const {app, BrowserWindow, ipcMain} = require('electron')
 const path = require('path')
 const fs = require('fs')
@@ -22,7 +21,7 @@ console.log("user_videos", user_videos);
 let cloneObj = function(obj){ return JSON.parse(JSON.stringify(obj))}
 
 function createWindow () {
-  // Create the browser window.
+
   mainWindow = new BrowserWindow({
     x:0,
     y:0,
@@ -33,38 +32,28 @@ function createWindow () {
     }
   })
 
-  // and load the index.html of the app.
   mainWindow.loadFile('app/index.html')
-
-  // Open the DevTools.
   mainWindow.webContents.openDevTools()
 
-  //runFiles(user_home)
 
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow()
 
   app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+
 })
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
+
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit()
+  //if (process.platform !== 'darwin') app.quit()
+  app.quit()
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+
 
 ipcMain.on('from_mainWindow', (event, data) => {
     //console.log("from_mainWindow", data)
@@ -73,16 +62,12 @@ ipcMain.on('from_mainWindow', (event, data) => {
 
 })
 
-setTimeout(function (){
-    //mainWindow.webContents.send("from_mainProcess",{type:"greet", msg:"hello", files:FILELIST[user_home]})
-},5000)
-
 
 
 // ffmpeg -i video.mp4 -ss 00:01:00 -to 00:02:00 -c copy cut.mp4
-//ffmpeg -f concat -safe 0 -i mylist.txt -c copy output.wav
-//ffprobe -v quiet -print_format json -show_format -show_streams 2021-01-09_08-49-26.mp4
-//*** determine commands for this system
+// ffmpeg -f concat -safe 0 -i mylist.txt -c copy output.wav
+// ffprobe -v quiet -print_format json -show_format -show_streams 2021-01-09_08-49-26.mp4
+
 let cmd = {ffprobe:"ffprobe", ffplay:"ffplay", ffmpeg:"ffmpeg"}
 cmd_options = {
     cut_clip:["-i", "inputVideo", "-ss", "startTime", "-to", "endTime", "-c", "copy", "outputFile"],
@@ -92,6 +77,7 @@ cmd_options = {
 }
 let codecs = {mp4:"libx264", webm:"libvpx-vp9", ogg:"libx264"}
 /*
+//*** find / determine location of executables for { ffmpeg ffprobe } on this system
 if (os_platform === "win32") {
 
 } else {
@@ -102,12 +88,13 @@ if (os_platform === "win32") {
 
 
 
-
+//
 let VOUT = {}
 VOUT.isWorking = false
 VOUT.project_cue = []
 VOUT.job = null
 
+// add a new video project job from the mainWindow
 VOUT.addProjectToCue = function (data) {
     VOUT.project_cue.push(data)
     console.log("VOUT: Adding new project to cue.");
@@ -119,6 +106,7 @@ VOUT.addProjectToCue = function (data) {
 
 
 }
+
 
 VOUT.parseCueItem = function() {
     if ( VOUT.project_cue.length === 0 ) {

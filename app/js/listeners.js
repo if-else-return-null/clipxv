@@ -110,7 +110,6 @@ BYID("archive_clip_list").addEventListener('click', (event) => {
 // start up calls
 
 // setup Transition selectors
-
 parseTransitionSelectors()
 
 // if there is no current project create one
@@ -120,7 +119,7 @@ if (META.projects.prid === null) {
     folderChooserHome()
 
 } else {
-    console.log("test",META.projects.prid, MP);
+    console.log("Loading last project:",META.projects.prid, MP);
     folderChooserUrl(MP.folder)
     parseClipList()
     parseProjectList()
