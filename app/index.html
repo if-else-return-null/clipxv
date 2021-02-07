@@ -23,10 +23,42 @@
                 <!--<input type="file" id="file_choose_video" webkitdirectory directory value="">-->
                 <img src="assets/folder_parent.png" alt="">
            </label>
+           <label class="file_chooser_btns" title="Cancel">
+               <button type="button" id="file_choose_video_cancel"></button>
+               <!--<input type="file" id="file_choose_video" webkitdirectory directory value=""> <img src="assets/folder_parent.png" alt="">-->
+              Cancel
+          </label>
              <hr>
          </div>
 
          <div id="video_list">
+
+         </div>
+
+     </div>
+
+     <div id="project_files_cont">
+         <div id="project_files_controls">
+             <label class="file_chooser_btns" title="Import Videos">
+
+                 <button type="button" id="file_import_btn"></button>
+                 <!--
+                 <input type="file" id="file_choose_video" webkitdirectory directory value="">
+                 <img src="assets/folder_home.png" alt="">
+                -->
+                Import
+            </label>
+            Project Source Videos
+             <hr>
+         </div>
+
+         <div id="project_video_list">
+
+         </div>
+
+         <div id="project_video_info_cont">
+             File Info<hr>
+             <div id="project_video_info_text"></div>
 
          </div>
          <div id="archive_clip_list_cont">
@@ -35,6 +67,9 @@
 
          </div>
      </div>
+
+
+
      <div id="mid_area">
          <video id="vplayer" src=""  poster="assets/poster.png" controls></video>
 

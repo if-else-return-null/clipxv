@@ -36,6 +36,8 @@ STATE.file_chooser_path = null
 STATE.video_path = null
 STATE.video_filename = null
 STATE.playing_whole_clip = false
+STATE.file_chooser_visible = false
+
 
 if (localStorage.getItem("files")){
     console.log("found meta files storage");

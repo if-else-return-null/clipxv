@@ -14,6 +14,8 @@ vplayer.addEventListener('timeupdate', (event) => {
 
 BYID("file_choose_video_home").addEventListener('click', folderChooserHome)
 BYID("file_choose_video_parent").addEventListener('click', folderChooserParent)
+BYID("file_choose_video_cancel").addEventListener('click', toggleFileChooser)
+BYID("file_import_btn").addEventListener('click', toggleFileChooser)
 
 BYID("mark_clip_save_btn").addEventListener('click', markClipSave)
 BYID("mark_clip_clear_btn").addEventListener('click', markClipClear)
@@ -54,14 +56,14 @@ BYID("project_cancel_delete_btn").addEventListener('click', cancelDeleteProject)
 BYID("project_create_video_btn").addEventListener('click', projectCreateVideo)
 
 BYID("video_list").addEventListener('click', (event) => {
-  console.log('selected video file ', event.target.id);
+  console.log('selected file chooser video file ', event.target.id);
   let fn = event.target.id
   if (FILES.items[fn]){
       console.log(FILES.items[fn]);
       if (FILES.items[fn].type === "folder") {
           folderChooserUrl(FILES.paths[fn])
       } else {
-
+          addVideoToMedia(fn)
           markClipClear()
           loadVideoFile(fn)
       }
@@ -70,6 +72,19 @@ BYID("video_list").addEventListener('click', (event) => {
 
   //loadPrevClip(event.target.id)
 });
+
+BYID("project_video_list").addEventListener('click', (event) => {
+  console.log('selected project media video file ', event.target.id);
+  let filename = event.target.id.replace("pm_", "")
+  markClipClear()
+  loadVideoFile(null,null,filename)
+
+
+
+});
+
+
+
 
 BYID("project_selector").addEventListener('change', (event) => {
   console.log('selected project is ', BYID(event.target.id).value);
@@ -109,6 +124,7 @@ if (META.projects.prid === null) {
     folderChooserUrl(MP.folder)
     parseClipList()
     parseProjectList()
+    parseProjectMedia()
     setTimeout(function(){
 
 

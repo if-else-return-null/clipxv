@@ -26,6 +26,7 @@ function createNewProject(){
         name:"untitled",
         clip_index:0,
         folder:STATE.file_chooser_path,
+        media:{},
         clips:{} ,
         clip_order:[]
     }
@@ -105,15 +106,39 @@ function projectCreateVideo() {
 }
 
 
-function parseFolderView(){
-    /*
-    if (STATE.first_load_info_visible === true) {
-        console.log("clearing first load");
-        STATE.first_load_info_visible = false
-        BYID("first_load_info").style.display = "none"
-        BYID("video_list_cont").style.width = "20%"
+function toggleFileChooser() {
+    if (STATE.file_chooser_visible === false) {
+        BYID("video_list_cont").style.left = "0%"
+        STATE.file_chooser_visible = true
+    } else {
+        BYID("video_list_cont").style.left = "-20%"
+        STATE.file_chooser_visible = false
     }
-    */
+}
+
+function addVideoToMedia(fn) {
+    if (!FILES.items[fn]) { return; }
+    let path = FILES.items[fn].path
+    let name = FILES.items[fn].name
+    if (MP.media[name]) {
+        return
+    } else {
+        MP.media[name] = path
+        saveMeta("mp")
+        parseProjectMedia()
+    }
+}
+
+function parseProjectMedia() {
+    let str = ""
+    for (let filename in MP.media) {
+        str +=`<div id="pm_${filename}" class="media_item" ><img id="pm_${filename}" src="assets/video.svg" />${filename}</div>`
+    }
+    BYID("project_video_list").innerHTML = str
+}
+
+function parseFolderView(){
+
     let str = {files:"", folders:""}
     console.log("parseFolderView");
     for (var i = 0; i < FILES.paths.length; i++) {
@@ -156,14 +181,19 @@ function clearVplayer() {
     time_update_text.textContent = vplayer.currentTime
 }
 
-function loadVideoFile(fn , id = null ) {
+function loadVideoFile(fn , id = null, media = null ) {
     console.log("loadVideoFile ",fn, id);
     let path, name
 
-    if (id === null) {
+    if (id === null && media === null) {
         path = FILES.items[fn].path
         name = FILES.items[fn].name
-    } else {
+    }
+    else if (media !== null) {
+        path = MP.media[media]
+        name = media
+    }
+    else {
         path = MP.clips[id].video_path
         name = MP.clips[id].video_filename
     }
@@ -171,6 +201,7 @@ function loadVideoFile(fn , id = null ) {
         console.log("loadVideoFile: Bad path or name. ");
         return
     }
+    if (STATE.file_chooser_visible === true) { toggleFileChooser()}
     BYID("vplayer").src = path
     BYID("loaded_video_text").textContent = name
     STATE.video_filename = name
