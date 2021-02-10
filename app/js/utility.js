@@ -64,3 +64,12 @@ function saveMeta(type = "all"){
     }
 
 }
+
+function showStatusNotify(info, clear = false) {
+    if (clear === true) {
+        BYID('status_notify_text').textContent = ""
+        return
+    }
+    BYID('status_notify_text').textContent = info
+    setTimeout(function(){ showStatusNotify("" , true)  },3000)
+}

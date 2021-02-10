@@ -79,17 +79,72 @@ if (os_platform === "win32") {
 cmd_options = {
     ffprobe_1:["-v", "quiet", "-print_format", "json", "-show_format", "-show_streams", "inputFile"]
 }
-let codecs = {mp4:"libx264", webm:"libvpx-vp9", ogg:"libx264"}
+let codecs = {mp4:"libx264", webm:"libvpx-vp9"}
+
+let formats = {
+    mp4:{ codec:"libx264" },
+    webm:{ codec:"libvpx-vp9"}
+}
 
 function probeFile(data) {
     console.log("probeFile",data);
-    data.info.isProbed = true
+    let options = cloneObj(cmd_options.ffprobe_1)
+    options[6] = data.info.path
+    //console.log(options);
+    let databuf = ""
+    let probespawn = spawn(cmd.ffprobe, options)
+    probespawn.stdout.on('data', (data) => { databuf += data });
+    probespawn.stderr.on('data', (data) => { console.log("stderr",data.toString());});
+    probespawn.on('exit', (code) => {
+      console.log(`probespawn exited with code ${code}`);
+      data.info.fpinfo = JSON.parse(databuf)
+      data.info.isProbed = true
+      checkFileProbe(data,code)
 
-    mainWindow.webContents.send("from_mainProcess",{ type:"file_probe_responce", success:true, info:data.info })
+
+    });
+
+
+
+
+
+
+
+
+
 }
 
+function checkFileProbe(data,code) {
+    if (code !== 0) {
+        console.log("ffprobe invalid file type");
+        mainWindow.webContents.send("from_mainProcess",{ type:"file_probe_responce", success:false, err:"invalid_file", info:data.info })
+        return
+    }
+    // get file extension
+    let extOK = false
+    let ext = data.info.name.split(".").pop()
+    if ( formats[ext] ) {  extOK = true   }
+    // check for video stream in file
+    let isVideo = false
+    for (let stream in data.info.fpinfo.streams){
+        console.log("stream ", data.info.fpinfo.streams[stream]);
+        if (data.info.fpinfo.streams[stream].codec_type === "video") { isVideo = true  }
+    }
+    if ( isVideo === false ) {
+        console.log("ffprobe no video stream");
+        mainWindow.webContents.send("from_mainProcess",{ type:"file_probe_responce", success:false, err:"no_video_stream_file", info:data.info })
+        return
+    }
+    if (extOK === false ) {
+        console.log("ffprobe wrong format (mp4 or webm only)");
+        mainWindow.webContents.send("from_mainProcess",{ type:"file_probe_responce", success:false, err:"wrong_format_video_file", info:data.info })
+        return
+    }
 
-//
+    // the file looks good ok to import
+    mainWindow.webContents.send("from_mainProcess",{ type:"file_probe_responce", success:true, err:null, info:data.info })
+}
+
 
 
 

@@ -13,6 +13,7 @@ function parseProjectList () {
 }
 
 function createNewProject(){
+    showStatusNotify("Creating new project")
     META.projects.prid = generateUUIDv4()
     MP = {
         id:META.projects.prid,
@@ -75,6 +76,7 @@ function confirmDeleteProject() {
 }
 
 function changeActiveProject(prid) {
+    showStatusNotify("Change active project")
     META.projects.prid = prid
     saveMeta("projects")
     MP = JSON.parse(localStorage.getItem(META.projects.prid))
@@ -137,6 +139,7 @@ function setImportLoading(action) {
 function handleFileProbeResponce(data) {
     console.log("handleFileProbeResponce", data);
     if (data.success === true) {
+        showStatusNotify("Video import successful")
         MP.media[data.info.name] = cloneObj(data.info)
         saveMeta("mp")
         setImportLoading("hide")
@@ -145,6 +148,7 @@ function handleFileProbeResponce(data) {
         loadVideoFile(null,data.info.name)
     } else {
         // handle invalid file choices
+        setImportLoading("hide")
 
     }
 }
