@@ -122,6 +122,7 @@ input[type="number"] { width: 100px;}
 }
 #project_video_info_text { width:auto; height:250px; overflow: auto;}
 
+#import_loading {display: none;}
 /*
 .arc_clipcard {width: 150px; height:auto; margin-left: 10px; display: inline-block;}
 .arc_clipcard img {width: 75%; height:auto;}
@@ -162,3 +163,4 @@ input[type="number"] { width: 100px;}
     max-width: 40%
 }
 .file_chooser_btns button { display:none;}
+.file_chooser_btns input { display:none;}

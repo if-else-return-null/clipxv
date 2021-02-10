@@ -253,7 +253,7 @@ function loadPrevClip(id) {
     BYID("clip_end_transition").value = thisclip.endTransition
     BYID("clip_end_transition_duration").value = thisclip.endTransitionDuration
     // set the vplayer src
-    loadVideoFile(thisclip.video_filename, id)
+    loadVideoFile(id, null)
     //vplayer.src = thisclip.video_path
     //*** maybe need to catch a loaed event here befor procedding
     vplayer.currentTime = parseFloat(thisclip.start)

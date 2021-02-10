@@ -81,7 +81,7 @@ function changeActiveProject(prid) {
     parseClipList()
     parseProjectList()
     markClipClear()
-    folderChooserUrl(MP.folder)
+    //folderChooserUrl(MP.folder)
     clearVplayer()
 }
 
@@ -109,18 +109,59 @@ function toggleFileChooser() {
     }
 }
 
-function addVideoToMedia(fn) {
-    if (!FILES.items[fn]) { return; }
-    let path = FILES.items[fn].path
-    let name = FILES.items[fn].name
-    if (MP.media[name]) {
+function addVideoToMedia(fileinfo) {
+    //if (!FILES.items[fn]) { return; }
+    //let path = FILES.items[fn].path
+    //let name = FILES.items[fn].name
+    let finfo = {}
+    finfo.isProbed = false
+    finfo.name = fileinfo.name
+    finfo.path = fileinfo.path
+    finfo.size = fileinfo.size
+    finfo.type = fileinfo.type
+    /*
+    if (MP.media[fileinfo.name]) {
+        // already in media just update the data
+
         return
     } else {
-        MP.media[name] = path
+
+
         saveMeta("mp")
         parseProjectMedia()
     }
+    */
+    setImportLoading("show")
+    capi.ipcSend("from_mainWindow",{ type:"request_file_probe", info:finfo })
+
 }
+
+function setImportLoading(action) {
+    if (action === "show") {
+        BYID("import_idle").style.display = "none"
+        BYID("import_loading").style.display = "block"
+    }
+    if (action === "hide") {
+        BYID("import_loading").style.display = "none"
+        BYID("import_idle").style.display = "block"
+    }
+}
+
+function handleFileProbeResponce(data) {
+    console.log("handleFileProbeResponce", data);
+    if (data.success === true) {
+        MP.media[data.info.name] = cloneObj(data.info)
+        saveMeta("mp")
+        setImportLoading("hide")
+        parseProjectMedia()
+        markClipClear()
+        loadVideoFile(null,data.info.name)
+    } else {
+        // handle invalid file choices
+
+    }
+}
+
 
 function parseProjectMedia() {
     let str = ""
@@ -129,7 +170,7 @@ function parseProjectMedia() {
     }
     BYID("project_video_list").innerHTML = str
 }
-
+/*
 function parseFolderView(){
 
     let str = {files:"", folders:""}
@@ -164,7 +205,7 @@ function folderChooserUrl(url) {
     console.log("folderChooserUrl", url);
     capi.ipcSend("from_mainWindow",{ type:"request_file_list", url:url })
 }
-
+*/
 
 function clearVplayer() {
     BYID("vplayer").src = ""
@@ -174,19 +215,20 @@ function clearVplayer() {
     time_update_text.textContent = vplayer.currentTime
 }
 
-function loadVideoFile(fn , id = null, media = null ) {
-    console.log("loadVideoFile ",fn, id);
+function loadVideoFile( id = null, media = null ) {
+    console.log("loadVideoFile ", id, media);
     let path, name
-
+    /*
     if (id === null && media === null) {
         path = FILES.items[fn].path
         name = FILES.items[fn].name
     }
-    else if (media !== null) {
-        path = MP.media[media]
+    else
+    */
+    if (media !== null) {
+        path = MP.media[media].path
         name = media
-    }
-    else {
+    } else {
         path = MP.clips[id].video_path
         name = MP.clips[id].video_filename
     }
@@ -227,19 +269,17 @@ function parseArchivedClips() {
 
 function handleFromMainProcess(data) {
     //console.log("from_mainProcess", data);
-    if (data.type = "file_chooser_path") {
+    /*
+    if (data.type === "file_chooser_path") {
         FILES = data.files
         STATE.file_chooser_path = data.root
         MP.folder = data.root
         saveMeta("mp")
         parseFolderView(data.root)
-        /*
-        if (STATE.first_load_info_visible === false) {
 
-        }
-        */
     }
-    if (data.type = "somthing_else") {
-
+    */
+    if (data.type === "file_probe_responce") {
+        handleFileProbeResponce(data)
     }
 }

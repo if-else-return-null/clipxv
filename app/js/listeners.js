@@ -12,10 +12,16 @@ vplayer.addEventListener('timeupdate', (event) => {
 });
 
 
-BYID("file_choose_video_home").addEventListener('click', folderChooserHome)
-BYID("file_choose_video_parent").addEventListener('click', folderChooserParent)
-BYID("file_choose_video_cancel").addEventListener('click', toggleFileChooser)
-BYID("file_import_btn").addEventListener('click', toggleFileChooser)
+//BYID("file_choose_video_home").addEventListener('click', folderChooserHome)
+//BYID("file_choose_video_parent").addEventListener('click', folderChooserParent)
+//BYID("file_choose_video_cancel").addEventListener('click', toggleFileChooser)
+//BYID("file_import_btn").addEventListener('click', toggleFileChooser)
+BYID("project_import_file_input").addEventListener('change', (event) => {
+    let fileinfo = BYID("project_import_file_input").files[0]//.path
+    console.log("new file import", fileinfo);
+    addVideoToMedia(fileinfo)
+})
+
 
 BYID("mark_clip_save_btn").addEventListener('click', markClipSave)
 BYID("mark_clip_clear_btn").addEventListener('click', markClipClear)
@@ -54,7 +60,7 @@ BYID("project_confirm_delete_btn").addEventListener('click', confirmDeleteProjec
 BYID("project_cancel_delete_btn").addEventListener('click', cancelDeleteProject)
 
 BYID("project_create_video_btn").addEventListener('click', projectCreateVideo)
-
+/*
 BYID("video_list").addEventListener('click', (event) => {
   console.log('selected file chooser video file ', event.target.id);
   let fn = event.target.id
@@ -72,12 +78,12 @@ BYID("video_list").addEventListener('click', (event) => {
 
   //loadPrevClip(event.target.id)
 });
-
+*/
 BYID("project_video_list").addEventListener('click', (event) => {
   console.log('selected project media video file ', event.target.id);
   let filename = event.target.id.replace("pm_", "")
   markClipClear()
-  loadVideoFile(null,null,filename)
+  loadVideoFile(null,filename)
 
 
 
@@ -116,11 +122,11 @@ parseTransitionSelectors()
 if (META.projects.prid === null) {
     // create a new project id
     createNewProject()
-    folderChooserHome()
+    //folderChooserHome()
 
 } else {
     console.log("Loading last project:",META.projects.prid, MP);
-    folderChooserUrl(MP.folder)
+    //folderChooserUrl(MP.folder)
     parseClipList()
     parseProjectList()
     parseProjectMedia()

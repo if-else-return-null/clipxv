@@ -40,13 +40,14 @@
      <div id="project_files_cont">
          <div id="project_files_controls">
              <label class="file_chooser_btns" title="Import Videos">
-
-                 <button type="button" id="file_import_btn"></button>
+                 <input type="file" id="project_import_file_input" accept="video/*" value="">
+                 <span id="import_loading">Loading...</span>
+                 <span id="import_idle">Import</span>
                  <!--
-                 <input type="file" id="file_choose_video" webkitdirectory directory value="">
+                 <button type="button" id="file_import_btn"></button>
                  <img src="assets/folder_home.png" alt="">
                 -->
-                Import
+
             </label>
             Project Source Videos
              <hr>
