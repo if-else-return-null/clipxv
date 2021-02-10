@@ -11,5 +11,5 @@ Video clip cutter and organizer for  mp4, ogg and webm
 * Create separate projects to organize clips
 
 ## clipxv features
-* Built-in file management
+
 * Archive individual clips for future or repeated use

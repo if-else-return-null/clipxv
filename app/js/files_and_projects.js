@@ -110,27 +110,14 @@ function toggleFileChooser() {
 }
 
 function addVideoToMedia(fileinfo) {
-    //if (!FILES.items[fn]) { return; }
-    //let path = FILES.items[fn].path
-    //let name = FILES.items[fn].name
+
     let finfo = {}
     finfo.isProbed = false
     finfo.name = fileinfo.name
     finfo.path = fileinfo.path
     finfo.size = fileinfo.size
     finfo.type = fileinfo.type
-    /*
-    if (MP.media[fileinfo.name]) {
-        // already in media just update the data
 
-        return
-    } else {
-
-
-        saveMeta("mp")
-        parseProjectMedia()
-    }
-    */
     setImportLoading("show")
     capi.ipcSend("from_mainWindow",{ type:"request_file_probe", info:finfo })
 
@@ -170,42 +157,6 @@ function parseProjectMedia() {
     }
     BYID("project_video_list").innerHTML = str
 }
-/*
-function parseFolderView(){
-
-    let str = {files:"", folders:""}
-    console.log("parseFolderView");
-    for (var i = 0; i < FILES.paths.length; i++) {
-        let item = FILES.items[i]
-        if (item.type === "folder") {
-            str.folders +=`<div id="${i}" class="video_list_folder" ><img id="${i}" src="assets/folder.svg" />${item.name}</div>`
-        }
-        else if (item.type === "file") {
-            if ( item.ftype !== "file" ) {
-                str.files +=`<div id="${i}" class="video_list_item" ><img id="${i}" src="assets/video.svg" />${item.name}</div>`
-            }
-        }
-        else {
-            // other files
-        }
-
-    }
-    let head = `<div  class="video_list_path" >${STATE.file_chooser_path}</div>`
-    BYID("video_list").innerHTML = head + str.folders + str.files
-}
-
-function folderChooserHome() {
-    console.log("folderChooserHome");
-    capi.ipcSend("from_mainWindow",{ type:"request_file_list", url:"home" })
-}
-function folderChooserParent () {
-    capi.ipcSend("from_mainWindow",{ type:"request_file_list", url:"parent" })
-}
-function folderChooserUrl(url) {
-    console.log("folderChooserUrl", url);
-    capi.ipcSend("from_mainWindow",{ type:"request_file_list", url:url })
-}
-*/
 
 function clearVplayer() {
     BYID("vplayer").src = ""
@@ -218,13 +169,7 @@ function clearVplayer() {
 function loadVideoFile( id = null, media = null ) {
     console.log("loadVideoFile ", id, media);
     let path, name
-    /*
-    if (id === null && media === null) {
-        path = FILES.items[fn].path
-        name = FILES.items[fn].name
-    }
-    else
-    */
+
     if (media !== null) {
         path = MP.media[media].path
         name = media
@@ -269,16 +214,7 @@ function parseArchivedClips() {
 
 function handleFromMainProcess(data) {
     //console.log("from_mainProcess", data);
-    /*
-    if (data.type === "file_chooser_path") {
-        FILES = data.files
-        STATE.file_chooser_path = data.root
-        MP.folder = data.root
-        saveMeta("mp")
-        parseFolderView(data.root)
 
-    }
-    */
     if (data.type === "file_probe_responce") {
         handleFileProbeResponce(data)
     }
